@@ -11,16 +11,6 @@ use Symfony\Component\Yaml\Yaml;
 class Factory {
 
 	/**
-	 * Create and save test data
-	 *
-	 * @param int $times
-	 */
-	function __construct($times = 1)
-	{
-		$this->times = $times;
-	}
-
-	/**
 	 * Create a new Builder instance.
 	 *
 	 * @return Builder
