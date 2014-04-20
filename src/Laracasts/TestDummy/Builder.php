@@ -71,9 +71,16 @@ class Builder {
 	 * Get a single fixture.
 	 *
 	 * @param string $type
+	 * @throws TestDummyException
+	 * @return
 	 */
 	public function getFixture($type)
 	{
+		if ( ! array_key_exists($type, $this->fixtures))
+		{
+			throw new TestDummyException("You need to create a '{$type}' fixture in your fixtures.yml file.");
+		}
+
 		return $this->fixtures[$type];
 	}
 
