@@ -7,7 +7,7 @@ Laughably simple database factories.
 ```php
 use Laracasts\TestDummy\Factory;
 
-Factory::make('Post'); // make a Post with filled attributes
+Factory::build('Post'); // make a Post with filled attributes
 
 Factory::times(3)->create('Song'); // make and save three songs, along with all relationships
 ```

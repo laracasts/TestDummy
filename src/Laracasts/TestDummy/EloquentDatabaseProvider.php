@@ -12,7 +12,7 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
 	 * @throws TestDummyException
 	 * @return mixed
 	 */
-	public function make($type, array $attributes)
+	public function build($type, array $attributes)
 	{
 		if ( ! class_exists($type))
 		{

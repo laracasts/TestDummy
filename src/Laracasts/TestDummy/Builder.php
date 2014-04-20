@@ -91,13 +91,13 @@ class Builder {
 	 * @param array  $fields
 	 * @return array
 	 */
-	public function make($type, $fields = [])
+	public function build($type, $fields = [])
 	{
 		$data = $this->mergeFixtureWithOverrides($type, $fields);
 
 		// We'll pass off the process of creating the entity.
 		// This way, folks can use different persistence layers.
-		return $this->database->make($type, $data);
+		return $this->database->build($type, $data);
 	}
 
 	/**
@@ -145,7 +145,7 @@ class Builder {
 	 */
 	protected function persist($type, array $fields = [])
 	{
-		$entity = $this->make($type, $fields);
+		$entity = $this->build($type, $fields);
 
 		// We'll filter through all of the columns, and check
 		// to see if there are any defined relationships. If there

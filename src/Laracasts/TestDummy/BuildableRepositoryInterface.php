@@ -10,7 +10,7 @@ interface BuildableRepositoryInterface {
 	 * @throws TestDummyException
 	 * @return mixed
 	 */
-	public function make($type, array $attributes);
+	public function build($type, array $attributes);
 
 	/**
 	 * Persist the entity

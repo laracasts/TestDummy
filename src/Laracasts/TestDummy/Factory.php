@@ -41,9 +41,9 @@ class Factory {
 	 * @param array  $attributes
 	 * @return array
 	 */
-	public static function make($type, array $attributes = [])
+	public static function build($type, array $attributes = [])
 	{
-		return static::getInstance()->make($type, $attributes);
+		return static::getInstance()->build($type, $attributes);
 	}
 
 	/**
