@@ -28,7 +28,7 @@ class Factory {
 	protected static function getInstance()
 	{
 		$finder = new FixturesFinder(app_path('tests'));
-        $fixtures = Yaml::parse($finder->find());
+		$fixtures = Yaml::parse($finder->find());
 
 		return new Builder(new EloquentDatabaseProvider, $fixtures);
 	}
