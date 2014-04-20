@@ -13,7 +13,7 @@ class DynamicAttributeReplacer {
 	protected static $number;
 
 	/**
-	 * @var \Faker\Generator
+	 * @var Faker
 	 */
 	protected $fake;
 
@@ -76,7 +76,7 @@ class DynamicAttributeReplacer {
 	 *
 	 * @return string
 	 */
-	public function getFakeString()
+	protected function getFakeString()
 	{
 	   return $this->fake->word;
 	}
@@ -86,7 +86,7 @@ class DynamicAttributeReplacer {
 	 *
 	 * @return mixed
 	 */
-	public function getFakeInteger()
+	protected function getFakeInteger()
 	{
 		return static::$number += 1;
 	}
