@@ -34,9 +34,9 @@ class Builder {
 
 	/**
 	 * Create test records for testing
-     *
-     * @param BuildableRepositoryInterface $database
-     * @param string $fixtures
+	 *
+	 * @param BuildableRepositoryInterface $database
+	 * @param string $fixtures
 	 */
 	public function __construct(BuildableRepositoryInterface $database, $fixtures)
 	{
