@@ -10,14 +10,14 @@ class FixturesFinder {
 	 *
 	 * @var string
 	 */
-	static $basePath;
+	protected $basePath;
 
 	/**
 	 * Track down the fixtures.yml file
 	 */
-	function __construct($basePath = null)
+	function __construct($basePath)
 	{
-		static::$basePath = $basePath ?: app_path('tests');
+		$this->basePath = $basePath;
 	}
 
 	/**
@@ -29,7 +29,7 @@ class FixturesFinder {
 	public function find()
 	{
 		$testsDirectory = new RecursiveIteratorIterator(
-			new RecursiveDirectoryIterator(static::$basePath)
+			new RecursiveDirectoryIterator($this->basePath)
 		);
 
 		// We'll try to hunt down the fixtures.yaml file.
