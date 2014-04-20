@@ -45,20 +45,32 @@ class DynamicAttributeReplacer {
 	{
 		foreach ($data as $column => $value)
 		{
-			$data[$column] = preg_replace_callback('/\$([a-z]+)/', function($matches)
-			{
-				if ($this->isASupportedFakeType($fakeType = $matches[1]))
-				{
-					return call_user_func([$this, 'getFake' . ucwords($fakeType)]);
-				}
-
-				// If we don't recognize it, we'll just keep it as it is.
-				return $matches[0];
-			}, $value);
+			$data[$column] = $this->updateColumnValue($value);
 		}
 
 		return $data;
 	}
+
+    /**
+     * Update any placeholders with dynamic fake substitutes.
+     *
+     * @param $value
+     * @return mixed
+     */
+    protected function updateColumnValue($value)
+    {
+        return preg_replace_callback('/\$([a-z]+)/', function($matches)
+        {
+            if ($this->isASupportedFakeType($fakeType = $matches[1]))
+            {
+                return call_user_func([$this, 'getFake' . ucwords($fakeType)]);
+            }
+
+            // If we don't recognize it, we'll just keep it as it is.
+            return $matches[0];
+        }, $value);
+
+    }
 
 	/**
 	 * Determine if the provided type is a supported fake type.
