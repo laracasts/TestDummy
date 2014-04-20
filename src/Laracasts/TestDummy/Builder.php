@@ -172,7 +172,7 @@ class Builder {
 	 */
 	protected function hasRelationshipAttribute($column, $value)
 	{
-		return preg_match('/.+?_id$/', $column, $matches) and is_array($value);
+		return preg_match('/.+?_id$/', $column) and is_array($value);
 	}
 
 	/**
