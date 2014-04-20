@@ -10,12 +10,12 @@ use Symfony\Component\Yaml\Yaml;
  */
 class Factory {
 
-    /**
-     * The path to the fixtures file
-     *
-     * @var string
-     */
-    protected static $fixturesPath;
+	/**
+	 * The path to the fixtures file
+	 *
+	 * @var string
+	 */
+	protected static $fixturesPath;
 
 	/**
 	 * Create a new Builder instance.
@@ -24,12 +24,12 @@ class Factory {
 	 */
 	protected static function getInstance()
 	{
-        if ( ! static::$fixturesPath)
-        {
-            $finder = new FixturesFinder(app_path('tests'));
+		if ( ! static::$fixturesPath)
+		{
+			$finder = new FixturesFinder(app_path('tests'));
 
-            static::$fixturesPath = Yaml::parse($finder->find());
-        }
+			static::$fixturesPath = Yaml::parse($finder->find());
+		}
 
 		return new Builder(new EloquentDatabaseProvider, static::$fixturesPath);
 	}
