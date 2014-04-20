@@ -11,21 +11,21 @@ class Builder {
 	 */
 	public static $fixturesPath;
 
-	/**
-	 * Number of times to create the record.
-	 *
-	 * @var int
-	 */
-	protected $times = 1;
-
-	/**
+    /**
 	 * All user-defined fixtures.
 	 *
 	 * @var array
 	 */
 	protected $fixtures;
 
-	/**
+    /**
+     * Number of times to create the record.
+     *
+     * @var int
+     */
+    protected $times = 1;
+
+    /**
 	 * Cached relationship ids
 	 *
 	 * @var array
