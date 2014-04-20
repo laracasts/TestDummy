@@ -1,5 +1,5 @@
 {
-    "name": "laracasts/test-dummy",
+    "name": "laracasts/testdummy",
     "description": "Easy test stubs",
     "keywords": ["testing", "laravel", "factorygirl", "stubs"],
     "license": "MIT",
