@@ -42,7 +42,7 @@ class Factory {
 	 */
 	public static function make($type, array $attributes = [])
 	{
-		return static::getInstance()->build($type, $attributes);
+		return static::getInstance()->make($type, $attributes);
 	}
 
 	/**
