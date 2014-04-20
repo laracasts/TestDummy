@@ -7,14 +7,15 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Laracasts\TestDummy\BuildableRepositoryInterface;
 use stdClass;
+use Symfony\Component\Yaml\Yaml;
 
 class BuilderSpec extends ObjectBehavior {
 
     function let(BuildableRepositoryInterface $builderRepository)
     {
-        $fixturesFinder = new FixturesFinder(__DIR__);
+        $fixtures = Yaml::parse(__DIR__.'/helpers/fixtures.yml');
 
-        $this->beConstructedWith($builderRepository, $fixturesFinder);
+        $this->beConstructedWith($builderRepository, $fixtures);
     }
 
     function it_is_initializable()

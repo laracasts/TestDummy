@@ -1,5 +1,7 @@
 <?php namespace Laracasts\TestDummy;
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * Convenience Laravel entry point to Builder.
  * Factory::times(2)->create('Post')
@@ -26,8 +28,9 @@ class Factory {
 	protected static function getInstance()
 	{
 		$finder = new FixturesFinder(app_path('tests'));
+        $fixtures = Yaml::parse($finder->find());
 
-		return new Builder(new EloquentDatabaseProvider, $finder);
+		return new Builder(new EloquentDatabaseProvider, $fixtures);
 	}
 
 	/**

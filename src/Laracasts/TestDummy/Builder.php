@@ -5,13 +5,6 @@ use Symfony\Component\Yaml\Yaml;
 class Builder {
 
 	/**
-	 * The path to the fixtures YAML file.
-	 *
-	 * @var string
-	 */
-	public static $fixturesPath;
-
-	/**
 	 * All user-defined fixtures.
 	 *
 	 * @var array
@@ -41,12 +34,14 @@ class Builder {
 
 	/**
 	 * Create test records for testing
+     *
+     * @param BuildableRepositoryInterface $database
+     * @param string $fixtures
 	 */
-	public function __construct(BuildableRepositoryInterface $database, FixturesFinder $fixturesFinder = null)
+	public function __construct(BuildableRepositoryInterface $database, $fixtures)
 	{
 		$this->database = $database;
-
-		$this->fixtures = $this->getFixtures($fixturesFinder);
+		$this->fixtures = $fixtures;
 	}
 
 	/**
@@ -70,24 +65,6 @@ class Builder {
 		$this->times = $count;
 
 		return $this;
-	}
-
-	/**
-	 * Find and parse the fixtures.yml file.
-	 *
-	 * @param FixturesFinder $finder
-	 * @throws Exception
-	 * @return array
-	 */
-	public function getFixtures(FixturesFinder $finder)
-	{
-		// We only want to track down this path once.
-		if ( ! static::$fixturesPath)
-		{
-		   static::$fixturesPath = $finder->find();
-		}
-
-		return Yaml::parse(static::$fixturesPath);
 	}
 
 	/**
