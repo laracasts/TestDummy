@@ -1,11 +1,20 @@
 <?php namespace Laracasts\TestDummy;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class EloquentDatabaseProvider implements BuildableRepositoryInterface {
 
 	/**
-	 * Build the entity with attributes
+	 * For preparing test data, we'll turn off
+	 * mass assignment protection and such.
+	 */
+	function __construct()
+	{
+	   Eloquent::unguard();
+	}
+
+	/**
+	 * Build the entity with attributes.
 	 *
 	 * @param string $type
 	 * @param array  $attributes
@@ -23,7 +32,7 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
 	}
 
 	/**
-	 * Persist the entity
+	 * Persist the entity.
 	 *
 	 * @param Model $entity
 	 * @return void
