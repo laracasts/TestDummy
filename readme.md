@@ -124,7 +124,7 @@ will continue recursively. So, if the `Album` has an `artist_id`, then an artist
 
 ### Step 3: Setup
 
-When testing against a database, it's recommended that you recreate your environment for each test. That way, you can protect yourself against false positives. A SQLite database (maybe even one in memory) is a good choice in these cases.
+When testing against a database, it's recommended that each test works with the exact same database environment and structure. That way, you can protect yourself against false positives. A SQLite database (maybe even one in memory) is a good choice in these cases.
 
 If using Laravel with a DB in memory, you might do:
 
@@ -137,7 +137,23 @@ public function setUp()
 }
 ```
 
-Better yet, place this code in a parent class, which you can then extend.
+Or, to save a bit of time, a helper `Laracasts\TestDummy\DbTestCase` class is included with this package. If you extend it,
+before each test, your test database will be migrated, and all DB modifications will be channelled through a transaction, and then rolled back on `tearDown`. This will give you a speed boost, and ensure that all tests start with the same database structure.
+
+```php
+
+use Laracasts\TestDummy\DBTestCase;
+
+class ExampleTest extends DBTestCase {
+
+    /** @test */
+    function it_does_something()
+    {
+        // before this test fires, the DB will be migrated.
+        // DB transactions will be used automatically to sve time.
+    }
+}
+```
 
 ### Step 4: Write Your Tests
 
@@ -163,22 +179,4 @@ $album = Album::first(); // this will be created once automatically.
 $this->assertEquals(600, $album->getTotalLength());
 ```
 
-## Extras
 
-For Laravel users, to save a bit of time, a helper `Laracasts\TestDummy\DbTestCase` class is included with this package. If you extend it,
-before each test, your test database will be migrated, and all DB modifications will be filtered through a transaction, and then rolled back on `tearDown`. This will give you a speed boost, and ensure that all tests start with the same database structure.
-
-```php
-
-use Laracasts\TestDummy\DBTestCase;
-
-class ExampleTest extends DBTestCase {
-
-    /** @test */
-    function it_does_something()
-    {
-        // before this test fires, the DB will be migrated.
-        // DB transactions will be used automatically to sve time.
-    }
-}
-```
