@@ -113,6 +113,11 @@ class DynamicAttributeReplacer {
 		return $this->fake->dateTimeThisYear->format('Y-m-d H:i:s');
 	}
 
+	/**
+	 * Get a fake paragraph
+	 *
+	 * @return mixed
+	 */
 	protected function getFakeText()
 	{
 		return $this->fake->paragraph(4);
