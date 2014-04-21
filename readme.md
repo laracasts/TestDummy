@@ -12,7 +12,7 @@ use Laracasts\TestDummy\Factory;
 $post = Factory::build('Post');
 ```
 
-This might return:
+If we then do `$post->toArray()`, this might return:
 
 ```bash
 array(4) {
@@ -27,13 +27,15 @@ array(4) {
 }
 ```
 
-### Create a post, but override the default title
+### Build a post, but override the default title
 
 ```php
 use Laracasts\TestDummy\Factory;
 
-Factory::create('Post', ['title' => 'My Title']);
+Factory::build('Post', ['title' => 'My Title']);
 ```
+
+Again, when cast to an array...
 
 ```bash
 array(4) {
