@@ -3,7 +3,7 @@
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Convenience Laravel entry point to Builder.
+ * Convenience Laravel bootstrap for TestDummy
  * Factory::times(2)->create('Post')
  *
  * @package Laracasts\TestDummy
@@ -15,7 +15,12 @@ class Factory {
 	 *
 	 * @var string
 	 */
-	protected static $fixturesPath;
+	protected static $fixtures;
+
+    /**
+     * Persistence layer
+     */
+    protected static $databaseProvider;
 
 	/**
 	 * Create a new Builder instance.
@@ -24,14 +29,10 @@ class Factory {
 	 */
 	protected static function getInstance()
 	{
-		if ( ! static::$fixturesPath)
-		{
-			$finder = new FixturesFinder(app_path('tests'));
+		if ( ! static::$fixtures) static::setFixtures();
+        if ( ! static::$databaseProvider) static::setDatabaseProvider();
 
-			static::$fixturesPath = Yaml::parse($finder->find());
-		}
-
-		return new Builder(new EloquentDatabaseProvider, static::$fixturesPath);
+        return new Builder(static::$databaseProvider, static::$fixtures);
 	}
 
 	/**
@@ -68,5 +69,32 @@ class Factory {
 	{
 		return static::getInstance()->setTimes($times);
 	}
+
+    /**
+     * Set the fixtures path
+     *
+     * @param $basePath
+     */
+    public static function setFixtures($basePath = null)
+    {
+        $basePath = $basePath ?: app_path('tests');
+
+        $finder = new FixturesFinder($basePath);
+
+        static::$fixtures = Yaml::parse($finder->find());
+    }
+
+    /**
+     * Set the database provider
+     *
+     * @param null $provider
+     * @return EloquentDatabaseProvider
+     */
+    public static function setDatabaseProvider($provider = null)
+    {
+        $provider = $provider ?: new EloquentDatabaseProvider;
+
+        return static::$databaseProvider = $provider;
+    }
 
 } 
