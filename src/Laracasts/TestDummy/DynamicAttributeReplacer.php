@@ -23,7 +23,7 @@ class DynamicAttributeReplacer {
 	 * @var array
 	 */
 	protected $matches = [
-		'string', 'integer'
+		'string', 'integer', 'date', 'text'
 	];
 
 	/**
@@ -51,26 +51,26 @@ class DynamicAttributeReplacer {
 		return $data;
 	}
 
-    /**
-     * Update any placeholders with dynamic fake substitutes.
-     *
-     * @param $value
-     * @return mixed
-     */
-    protected function updateColumnValue($value)
-    {
-        return preg_replace_callback('/\$([a-z]+)/', function($matches)
-        {
-            if ($this->isASupportedFakeType($fakeType = $matches[1]))
-            {
-                return call_user_func([$this, 'getFake' . ucwords($fakeType)]);
-            }
+	/**
+	 * Update any placeholders with dynamic fake substitutes.
+	 *
+	 * @param $value
+	 * @return mixed
+	 */
+	protected function updateColumnValue($value)
+	{
+		return preg_replace_callback('/\$([a-z]+)/', function($matches)
+		{
+			if ($this->isASupportedFakeType($fakeType = $matches[1]))
+			{
+				return call_user_func([$this, 'getFake' . ucwords($fakeType)]);
+			}
 
-            // If we don't recognize it, we'll just keep it as it is.
-            return $matches[0];
-        }, $value);
+			// If we don't recognize it, we'll just keep it as it is.
+			return $matches[0];
+		}, $value);
 
-    }
+	}
 
 	/**
 	 * Determine if the provided type is a supported fake type.
@@ -102,4 +102,20 @@ class DynamicAttributeReplacer {
 	{
 		return static::$number += 1;
 	}
+
+	/**
+	 * Get a fake MySQL timestamp
+	 *
+	 * @return mixed
+	 */
+	public function getFakeDate()
+	{
+		return $this->fake->dateTimeThisYear->format('Y-m-d H:i:s');
+	}
+
+	public function getFakeText()
+	{
+		return $this->fake->paragraph(4);
+	}
+
 }
