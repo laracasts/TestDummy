@@ -4,7 +4,7 @@
 
 TestDummy makes the process of preparing your database for integration tests as easy as possible. ...As easy as:
 
-### Make a post model with dummy attributes.
+### Make a Post entity with dummy attributes.
 
 ```php
 use Laracasts\TestDummy\Factory;
@@ -12,7 +12,43 @@ use Laracasts\TestDummy\Factory;
 $post = Factory::build('Post');
 ```
 
-### Build a song entity, along with any set relationships, and save it to the database.
+This might return:
+
+```bash
+array(4) {
+  ["title"]=>
+  string(21) "The Title of the Post"
+  ["author_id"]=>
+  string(1) "5"
+  ["body"]=>
+  string(226) "Iusto qui optio et iste. Cumque aliquid et omnis enim. Nesciunt ad esse a reiciendis expedita quidem veritatis. Nostrum repellendus reiciendis distinctio amet sapiente. Eum molestias a recusandae modi aut et adipisci corrupti."
+  ["publish_date"]=>
+  string(19) "2014-03-02 11:05:48"
+}
+```
+
+### Create a post, but override the default title
+
+```php
+use Laracasts\TestDummy\Factory;
+
+Factory::create('Post', ['title' => 'My Title']);
+```
+
+```bash
+array(4) {
+  ["title"]=>
+  string(14) "My New Package"
+  ["author_id"]=>
+  string(1) "5"
+  ["body"]=>
+  string(254) "In eos porro qui est rerum possimus voluptatem non. Repudiandae eaque nostrum eaque aut deleniti possimus quod minus. Molestiae commodi odit sunt dignissimos corrupti repudiandae quibusdam quo. Autem maxime tenetur autem corporis aut quis sint occaecati."
+  ["publish_date"]=>
+  string(19) "2013-06-24 10:01:30"
+}
+```
+
+### Build a song entity, and save it to the database.
 
 ```php
 use Laracasts\TestDummy\Factory;
@@ -20,7 +56,9 @@ use Laracasts\TestDummy\Factory;
 $song = Factory::create('Song');
 ```
 
-### Create and persist three comment entities
+If the `songs` table has relationships - like `album_id`, then the relationship entities will be built and saved, too.
+
+### Create and persist a comment three times
 
 ```php
 use Laracasts\TestDummy\Factory;
@@ -28,13 +66,7 @@ use Laracasts\TestDummy\Factory;
 Factory::times(3)->create('Song');
 ```
 
-### Create three posts, but override the default title
-
-```php
-use Laracasts\TestDummy\Factory;
-
-Factory::times(3)->create('Post', ['title' => 'My Title']);
-```
+In effect, this will give you three rows in your `songs` table. Again, if that table has relationships, those rows will be created with dummy data as well.
 
 ## Usage
 
