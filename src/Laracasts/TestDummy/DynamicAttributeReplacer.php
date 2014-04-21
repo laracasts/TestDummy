@@ -108,12 +108,12 @@ class DynamicAttributeReplacer {
 	 *
 	 * @return mixed
 	 */
-	public function getFakeDate()
+	protected function getFakeDate()
 	{
 		return $this->fake->dateTimeThisYear->format('Y-m-d H:i:s');
 	}
 
-	public function getFakeText()
+	protected function getFakeText()
 	{
 		return $this->fake->paragraph(4);
 	}
