@@ -34,7 +34,7 @@ array(4) {
 ```php
 use Laracasts\TestDummy\Factory;
 
-Factory::build('Post', ['title' => 'My Title']);
+Factory::build('Post', ['title' => 'Override Title']);
 ```
 
 Again, when cast to an array...
@@ -42,7 +42,7 @@ Again, when cast to an array...
 ```bash
 array(4) {
   ["title"]=>
-  string(14) "My New Package"
+  string(14) "Override Title"
   ["author_id"]=>
   string(1) "5"
   ["body"]=>
@@ -160,9 +160,8 @@ will continue recursively. So, if the `Album` has an `artist_id`, then an artist
 
 ### Step 3: Setup
 
-When testing against a database, it's recommended that each test works with the exact same database environment and structure. That way, you can protect yourself against false positives. A SQLite database (maybe even one in memory) is a good choice in these cases.
-
-If using Laravel with a DB in memory, you might do:
+When testing against a database, it's recommended that each test works with the exact same database environment and structure. That way, you can protect yourself against false positives.
+A SQLite database (maybe even one in memory) is a good choice in these cases.
 
 ```php
 public function setUp()
@@ -173,8 +172,8 @@ public function setUp()
 }
 ```
 
-Or, to save a bit of time, a helper `Laracasts\TestDummy\DbTestCase` class is included with this package. If you extend it,
-before each test, your test database will be migrated, and all DB modifications will be channelled through a transaction, and then rolled back on `tearDown`. This will give you a speed boost, and ensure that all tests start with the same database structure.
+Or, if a DB in memory isn't possible, to save a bit of time, a helper `Laracasts\TestDummy\DbTestCase` class is included with this package. If you extend it,
+before each test, your test DB will be migrated (if necessary), and all DB modifications will be channelled through a transaction, and then rolled back on `tearDown`. This will give you a speed boost, and ensure that all tests start with the same database structure.
 
 ```php
 
@@ -185,8 +184,7 @@ class ExampleTest extends DBTestCase {
     /** @test */
     function it_does_something()
     {
-        // before this test fires, the DB will be migrated.
-        // DB transactions will be used automatically to sve time.
+        // Before each test, your database will be rolled back
     }
 }
 ```
