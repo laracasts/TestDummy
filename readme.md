@@ -55,7 +55,7 @@ directory. Here's an example of a `Post` and an `Author`.
 
 ```ruby
 Post:
-  title: Hello World
+  title: Hello World $string
   body: $text
   published_at: $date
   author_id:
@@ -65,7 +65,7 @@ Author:
     name: John Doe $integer
 ```
 
-Notice that we can use `$text`, `$date`, and `$integer` placeholders. Behind the scenes, TestDummy will leverage the Faker library to insert dynamic data.
+Notice that we can use `$string`, `$text`, `$date`, and `$integer` placeholders. Behind the scenes, TestDummy will leverage the Faker library to insert dynamic data.
 
 Pay attention to how we reference relationships, such as `author_id` above. You need to let TestDummy know the type of its associated model. TestDummy will then automatically create and save that relationship as well.
 
@@ -74,7 +74,24 @@ Pay attention to how we reference relationships, such as `author_id` above. You 
     type: Author
 ```
 
-### Step 3: Write Your Tests
+### Step 3: Setup
+
+When testing against a database, it's recommended that you recreate your environment for each test. That way, you can protect yourself against false positives. A SQLite database (maybe even one in memory) is a good choice in these cases.
+
+If using Laravel with a DB in memory, you might do:
+
+```php
+public function setUp()
+{
+    parent::setUp();
+
+    Artisan::call('migrate');
+}
+```
+
+Better yet, place this code in a parent class, which you can then extend.
+
+### Step 4: Write Your Tests
 
 You're all set to go now. Start testing! Here's some code to get you started. Assuming that you have a `Post` and `Comment` model created...
 
@@ -98,5 +115,4 @@ $album = Album::first(); // this will be created once automatically.
 $this->assertEquals(600, $album->getTotalLength());
 ```
 
-Done!
 
