@@ -1,8 +1,10 @@
-# TestDummy
+# TestDummy [![Build Status](https://travis-ci.org/laracasts/TestDummy.svg?branch=master)](https://travis-ci.org/laracasts/TestDummy)
 
 ![image](https://dl.dropboxusercontent.com/u/774859/GitHub-Repos/testdummy/crashtestdummy.jpg)
 
 TestDummy makes the process of preparing your database for integration tests as easy as possible. ...As easy as:
+
+> [Want a video introduction?](http://player.vimeo.com/external/92517786.hd.mp4?s=3a8c7522b63a063f6a9176ddfe0030e8)
 
 ### Make a Post entity with dummy attributes.
 
