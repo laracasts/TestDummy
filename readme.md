@@ -53,16 +53,25 @@ Pull this package in through Composer, per usual:
 TestDummy will fetch the default values for each of your entities from a `fixtures.yml` file that you place in your tests directory. If using Laravel, this file may be added anywhere under the `app/tests`
 directory. Here's an example of a `Post` and an `Author`.
 
-```bash
+```ruby
 Post:
   title: Hello World
   body: $text
   published_at: $date
   author_id:
-    Author
+    type: Author
 
 Author:
     name: John Doe $integer
+```
+
+Notice that we can use `$text`, `$date`, and `$integer` placeholders. Behind the scenes, TestDummy will leverage the Faker library to insert dynamic data.
+
+Pay attention to how we reference relationships, such as `author_id` above. You need to let TestDummy know the type of its associated model. TestDummy will then automatically create and save that relationship as well.
+
+```ruby
+  author_id:
+    type: Author
 ```
 
 ### Step 3: Write Your Tests
