@@ -115,4 +115,22 @@ $album = Album::first(); // this will be created once automatically.
 $this->assertEquals(600, $album->getTotalLength());
 ```
 
+## Extras
 
+For Laravel users, to save a bit of time, a helper `Laracasts\TestDummy\DbTestCase` class is included with this package. If you extend it,
+before each test, your test database will be migrated, and all DB modifications will be filtered through a transaction, and then rolled back on `tearDown`. This will give you a speed boost, and ensure that all tests start with the same database structure.
+
+```php
+
+use Laracasts\TestDummy\DBTestCase;
+
+class Example Test extends DBTestCase {
+
+    /** @test */
+    function it_does_something()
+    {
+        // before this test fires, the DB will be migrated
+        // DB transactions will be used automatically to save time
+    }
+}
+```
