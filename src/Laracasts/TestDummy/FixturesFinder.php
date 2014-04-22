@@ -22,14 +22,14 @@ class FixturesFinder {
 
 	/**
 	 * Track down the fixtures.yml file for TestDummy.
-     * This way, the file can be placed just about anywhere
+	 * This way, the file can be placed just about anywhere
 	 *
 	 * @throws TestDummyException
 	 * @return mixed
 	 */
 	public function find()
 	{
-        foreach($this->getDirectoryIterator() as $file)
+		foreach($this->getDirectoryIterator() as $file)
 		{
 			$name = $file->getFilename();
 
@@ -39,26 +39,26 @@ class FixturesFinder {
 		throw new TestDummyException('Could not locate the fixtures.yml file.');
 	}
 
-    /**
-     * Get the directory iterator
-     *
-     * @return RecursiveIteratorIterator
-     */
-    protected function getDirectoryIterator()
-    {
-        return new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($this->basePath)
-        );
-    }
+	/**
+	 * Get the directory iterator
+	 *
+	 * @return RecursiveIteratorIterator
+	 */
+	protected function getDirectoryIterator()
+	{
+		return new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator($this->basePath)
+		);
+	}
 
-    /**
-     * Is the given file the one we want?
-     *
-     * @param $name
-     * @return bool
-     */
-    protected function isTheFixturesFile($name)
-    {
-        return $name == 'fixtures.yml' or $name == 'fixtures.yaml';
-    }
+	/**
+	 * Is the given file the one we want?
+	 *
+	 * @param $name
+	 * @return bool
+	 */
+	protected function isTheFixturesFile($name)
+	{
+		return $name == 'fixtures.yml' or $name == 'fixtures.yaml';
+	}
 }
