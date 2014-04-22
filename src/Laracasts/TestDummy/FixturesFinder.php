@@ -13,15 +13,21 @@ class FixturesFinder {
 	protected $basePath;
 
 	/**
+	 * @var string
+	 */
+	private $fixturesFileName;
+
+	/**
 	 * Track down the fixtures.yml file
 	 */
-	function __construct($basePath)
+	function __construct($basePath, $fixturesFileName = 'fixtures')
 	{
 		$this->basePath = $basePath;
+		$this->fixturesFileName = $fixturesFileName;
 	}
 
 	/**
-	 * Track down the fixtures.yml file for TestDummy.
+	 * Track down the fixtures file for TestDummy.
 	 * This way, the file can be placed just about anywhere
 	 *
 	 * @throws TestDummyException
@@ -59,6 +65,7 @@ class FixturesFinder {
 	 */
 	protected function isTheFixturesFile($name)
 	{
-		return $name == 'fixtures.yml' or $name == 'fixtures.yaml';
+		return $name == $this->fixturesFileName . '.yml' or
+			   $name == $this->fixturesFileName . '.yaml';
 	}
 }
