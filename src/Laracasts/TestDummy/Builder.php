@@ -36,9 +36,9 @@ class Builder {
 	 * Create test records for testing
 	 *
 	 * @param BuildableRepositoryInterface $database
-	 * @param string $fixtures
+	 * @param array $fixtures
 	 */
-	public function __construct(BuildableRepositoryInterface $database, $fixtures)
+	public function __construct(BuildableRepositoryInterface $database, array $fixtures)
 	{
 		$this->database = $database;
 		$this->fixtures = $fixtures;
