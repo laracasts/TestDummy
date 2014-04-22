@@ -13,6 +13,8 @@ class DynamicAttributeReplacer {
 	protected static $number;
 
 	/**
+     * The Faker instance
+     *
 	 * @var Faker
 	 */
 	protected $fake;
@@ -22,7 +24,7 @@ class DynamicAttributeReplacer {
 	 *
 	 * @var array
 	 */
-	protected $matches = [
+	protected $supportedFakes = [
 		'string', 'integer', 'date', 'text'
 	];
 
@@ -69,7 +71,6 @@ class DynamicAttributeReplacer {
 			// If we don't recognize it, we'll just keep it as it is.
 			return $matches[0];
 		}, $value);
-
 	}
 
 	/**
@@ -80,7 +81,7 @@ class DynamicAttributeReplacer {
 	 */
 	protected function isASupportedFakeType($fakeType)
 	{
-		return in_array($fakeType, $this->matches);
+		return in_array($fakeType, $this->supportedFakes);
 	}
 
 	/**
