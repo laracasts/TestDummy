@@ -110,6 +110,7 @@ class Builder {
 	public function create($type, array $fields = [])
 	{
 		$times = $this->getTimes();
+        $entities = [];
 
 		while ($times--)
 		{
