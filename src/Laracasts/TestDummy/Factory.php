@@ -13,12 +13,14 @@ class Factory {
 	/**
 	 * The path to the fixtures file
 	 *
-	 * @var string
+	 * @var array
 	 */
 	protected static $fixtures;
 
 	/**
 	 * Persistence layer
+     *
+     * @var BuildableRepositoryInterface
 	 */
 	protected static $databaseProvider;
 
