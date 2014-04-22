@@ -19,7 +19,7 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
 	 * @param string $type
 	 * @param array  $attributes
 	 * @throws TestDummyException
-	 * @return mixed
+	 * @return Eloquent
 	 */
 	public function build($type, array $attributes)
 	{
