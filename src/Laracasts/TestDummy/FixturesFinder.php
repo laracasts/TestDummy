@@ -65,8 +65,8 @@ class FixturesFinder {
 	 */
 	protected function isTheFixturesFile($name)
 	{
-        $fixturesName = $this->fixturesFileName;
+		$fixturesName = $this->fixturesFileName;
 
-        return preg_match('/' . $fixturesName . '.ya?ml$/i', $name);
+		return preg_match('/' . $fixturesName . '.ya?ml$/i', $name);
 	}
 }
