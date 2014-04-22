@@ -70,7 +70,7 @@ use Laracasts\TestDummy\Factory;
 Factory::times(3)->create('Comment');
 ```
 
-In effect, this will give you three rows in your `songs` table. Again, if that table has relationships, those rows will be created with dummy data as well.
+In effect, this will give you three rows in your `comments` table. Again, if that table has relationships, those rows will be created with dummy data as well.
 
 ## Usage
 
