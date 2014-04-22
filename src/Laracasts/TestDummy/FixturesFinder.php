@@ -65,7 +65,8 @@ class FixturesFinder {
 	 */
 	protected function isTheFixturesFile($name)
 	{
-		return $name == $this->fixturesFileName . '.yml' or
-			   $name == $this->fixturesFileName . '.yaml';
+        $fixturesName = $this->fixturesFileName;
+
+        return preg_match('/' . $fixturesName . '.ya?ml$/i', $name);
 	}
 }
