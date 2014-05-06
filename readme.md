@@ -177,9 +177,9 @@ before each test, your test DB will be migrated (if necessary), and all DB modif
 
 ```php
 
-use Laracasts\TestDummy\DBTestCase;
+use Laracasts\TestDummy\DbTestCase;
 
-class ExampleTest extends DBTestCase {
+class ExampleTest extends DbTestCase {
 
     /** @test */
     function it_does_something()
