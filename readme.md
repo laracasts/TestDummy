@@ -116,6 +116,7 @@ Also, notice that we can use a number of dynamic values here:
 - `$text`: A paragraph of dummy text
 - `$date`: A date in the format of "Y-m-d H:i:s', suitable for database timestamps
 - `$integer`: Any unique number
+- `$boolean`: A boolean as an integer
 
 Here are some usage examples:
 
@@ -125,6 +126,7 @@ Post:
     body: $text
     publish_date: $date
     keywords: $string $string $string
+    active: $boolean
 ```
 
 This might return something similar to:
@@ -139,6 +141,8 @@ array(4) {
   string(19) "2013-05-05 20:33:12"
   ["keywords"]=>
   string(30) "consequatur provident pariatur"
+  ["active"]=>
+  int(1)
 }
 ```
 
