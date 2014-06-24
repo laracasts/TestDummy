@@ -39,6 +39,7 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
 	 */
 	public function save($entity)
 	{
+       $entity->boot();
 	   $entity->save();
 	}
 
