@@ -25,7 +25,7 @@ class DynamicAttributeReplacer {
 	 * @var array
 	 */
 	protected $supportedFakes = [
-		'string', 'integer', 'date', 'text'
+		'string', 'integer', 'date', 'text', 'boolean', 'uuid'
 	];
 
 	/**
@@ -123,5 +123,25 @@ class DynamicAttributeReplacer {
 	{
 		return $this->fake->paragraph(4);
 	}
+	
+	/**
+	 * Get a fake boolean
+	 * 
+	 * @return mixed
+	 */
+	protected function getFakeBoolean()
+	{
+		return (int) $this->fake->boolean();
+	}
+	
+	 /**
+         * Get a fake uuid
+         *
+         * @return string
+         */
+        protected function getFakeUuid()
+        {
+           	return $this->fake->uuid;
+        }
 
 }
