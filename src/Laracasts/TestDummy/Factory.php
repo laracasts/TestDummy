@@ -79,7 +79,10 @@ class Factory {
 	 */
 	public static function setFixtures($basePath = null)
 	{
-		$basePath = $basePath ?: app_path('tests');
+		if ( ! $basePath)
+		{
+			$basePath = file_exists(base_path('tests')) ? base_path('tests') : app_path('tests');
+		}
 
 		$finder = new FixturesFinder($basePath);
 
@@ -99,4 +102,4 @@ class Factory {
 		return static::$databaseProvider = $provider;
 	}
 
-} 
+}
