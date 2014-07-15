@@ -112,11 +112,16 @@ Models\Post:
 
 Also, notice that we can use a number of dynamic values here:
 
-- `$string`: A simple placeholder word
-- `$text`: A paragraph of dummy text
+- `$boolean`: A boolean as an integer
 - `$date`: A date in the format of "Y-m-d H:i:s', suitable for database timestamps
 - `$integer`: Any unique number
-- `$boolean`: A boolean as an integer
+- `$ip`: A random IPv4 or IPv6
+- `$ipv4`: An IPv4
+- `$ipv6`: An IPv6
+- `$slug`: A slugged title
+- `$string`: A simple placeholder word
+- `$text`: A paragraph of dummy text
+- `$username`: An username
 
 Here are some usage examples:
 
