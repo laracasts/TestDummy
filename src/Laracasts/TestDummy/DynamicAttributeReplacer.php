@@ -25,7 +25,7 @@ class DynamicAttributeReplacer {
 	 * @var array
 	 */
 	protected $supportedFakes = [
-		'string', 'integer', 'date', 'text', 'boolean', 'uuid'
+		'string', 'integer', 'digit', 'date', 'text', 'boolean', 'uuid'
 	];
 
 	/**
@@ -102,6 +102,16 @@ class DynamicAttributeReplacer {
 	protected function getFakeInteger()
 	{
 		return static::$number += 1;
+	}
+
+	/**
+	 * Get a fake digit
+	 *
+	 * @return mixed
+	 */
+	protected function getFakeDigit()
+	{
+		return rand(0,9);
 	}
 
 	/**
