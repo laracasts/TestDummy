@@ -116,6 +116,7 @@ Also, notice that we can use a number of dynamic values here:
 - `$text`: A paragraph of dummy text
 - `$date`: A date in the format of "Y-m-d H:i:s', suitable for database timestamps
 - `$integer`: Any unique number
+- `$digit`: A random number from 0 to 9
 - `$boolean`: A boolean as an integer
 
 Here are some usage examples:
