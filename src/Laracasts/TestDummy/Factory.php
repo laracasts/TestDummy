@@ -24,6 +24,13 @@ class Factory {
 	 */
 	protected static $databaseProvider;
 
+    /**
+     * Attribute replacer
+     *
+     * @var AttributeReplacer
+     */
+    protected static $attributeReplacer;
+
 	/**
 	 * Create a new Builder instance.
 	 *
@@ -33,8 +40,9 @@ class Factory {
 	{
 		if ( ! static::$fixtures) static::setFixtures();
 		if ( ! static::$databaseProvider) static::setDatabaseProvider();
+        if ( ! static::$attributeReplacer) static::setAttributeReplacer();
 
-		return new Builder(static::$databaseProvider, static::$fixtures);
+		return new Builder(static::$databaseProvider, static::$attributeReplacer, static::$fixtures);
 	}
 
 	/**
@@ -101,5 +109,18 @@ class Factory {
 
 		return static::$databaseProvider = $provider;
 	}
+
+    /**
+     * Set the attribute replacer
+     *
+     * @param null $attributeReplacer
+     * @return AttributeReplacer
+     */
+    public static function setAttributeReplacer($attributeReplacer = null)
+    {
+        $attributeReplacer = $attributeReplacer ?: new DynamicAttributeReplacer();
+
+        return static::$attributeReplacer = $attributeReplacer;
+    }
 
 }
