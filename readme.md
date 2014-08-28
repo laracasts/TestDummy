@@ -219,3 +219,33 @@ $this->assertEquals(600, $album->getTotalLength());
 ```
 
 
+
+## Enable Faker integration
+
+If you want, you can also use methods of the popular [Faker](https://github.com/fzaninotto/Faker) package. You need to enable it once:
+
+```php
+
+use Laracasts\TestDummy\Factory;
+
+Factory::useFaker();
+```
+
+You can now use all Faker attributes described in [Faker's manual](https://github.com/fzaninotto/Faker/blob/master/readme.md). For example:
+
+```yaml
+User:
+  name: $name
+  birthdate: $dateTimeThisCentury
+  address: $address
+  phone: $phoneNumber
+  email: $email
+```
+
+Optionally, you can set the locale by using:
+
+```php
+Factory::useFaker('nl_NL');
+```
+
+To see which locales are available, take a look at [Faker's `Provider` directory](https://github.com/fzaninotto/Faker/tree/master/src/Faker/Provider). The default locale is `en_US` (defined in `Faker\Factory::DEFAULT_LOCALE`).
