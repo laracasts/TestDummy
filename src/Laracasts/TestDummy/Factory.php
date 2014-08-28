@@ -1,5 +1,6 @@
 <?php namespace Laracasts\TestDummy;
 
+use Faker\Factory as FakerFactory;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -121,6 +122,15 @@ class Factory {
         $attributeReplacer = $attributeReplacer ?: new DynamicAttributeReplacer();
 
         return static::$attributeReplacer = $attributeReplacer;
+    }
+
+    /**
+     * Helper method to quickly set the faker attribute replacer.
+     *
+     * @param string $locale
+     */
+    public static function useFaker($locale = FakerFactory::DEFAULT_LOCALE) {
+        static::setAttributeReplacer(new FakerAttributeReplacer(FakerFactory::create($locale)));
     }
 
 }
