@@ -155,7 +155,7 @@ class Builder {
 		{
 			if ($this->hasRelationshipAttribute($column, $value))
 			{
-				$entity[$column] = $this->fetchRelationshipId($value['type']);
+				$entity[$column] = $this->fetchRelationshipId($column, $value['type']);
 			}
 		}
 
@@ -182,14 +182,14 @@ class Builder {
 	 * @param $type
 	 * @return integer
 	 */
-	protected function fetchRelationshipId($type)
+	protected function fetchRelationshipId($column, $type)
 	{
-		if ($this->isRelationshipAlreadyCreated($type))
+		if ($this->isRelationshipAlreadyCreated($column))
 		{
-			return $this->relationshipIds[$type];
+			return $this->relationshipIds[$column];
 		}
 
-		return $this->relationshipIds[$type] = $this->persist($type)->id;
+		return $this->relationshipIds[$column] = $this->persist($type)->id;
 	}
 
 	/**
