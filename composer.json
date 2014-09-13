@@ -11,12 +11,12 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "illuminate/support": "4.*",
+        "illuminate/support": "~5.0",
         "fzaninotto/faker": "~1.4",
         "symfony/yaml": "~2.0"
     },
     "require-dev": {
-        "phpspec/phpspec": "2.0.*@dev"
+        "phpspec/phpspec": "~2.0"
     },
     "autoload": {
         "psr-0": {
