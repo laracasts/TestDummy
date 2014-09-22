@@ -2,7 +2,7 @@
 
 use Faker\Factory as Faker;
 
-class DynamicAttributeReplacer {
+class DynamicAttributeReplacer implements AttributeReplacer {
 
 	/**
 	 * We'll increment all numbers references

@@ -32,16 +32,25 @@ class Builder {
 	 */
 	private $database;
 
+    /**
+     * The attribute replacer.
+     *
+     * @var AttributeReplacer
+     */
+    private $attributeReplacer;
+
 	/**
 	 * Create test records for testing
 	 *
 	 * @param BuildableRepositoryInterface $database
+     * @param AttributeReplacer $attributeReplacer
 	 * @param array $fixtures
 	 */
-	public function __construct(BuildableRepositoryInterface $database, array $fixtures)
+	public function __construct(BuildableRepositoryInterface $database, AttributeReplacer $attributeReplacer, array $fixtures)
 	{
 		$this->database = $database;
 		$this->fixtures = $fixtures;
+        $this->attributeReplacer = $attributeReplacer;
 	}
 
 	/**
@@ -134,7 +143,7 @@ class Builder {
 		$data = array_merge($this->getFixture($type), $fields);
 
 		// Next, we'll do any necessary dynamic replacements.
-		return (new DynamicAttributeReplacer)->replace($data);
+		return $this->attributeReplacer->replace($data);
 	}
 
 	/**
