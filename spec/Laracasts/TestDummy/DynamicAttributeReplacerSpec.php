@@ -29,6 +29,15 @@ class DynamicAttributeReplacerSpec extends ObjectBehavior
 		$replaced['author']->shouldEqual('$invalid placeholder');
 	}
 
+    function it_does()
+    {
+        $replaced = $this->replace([
+            'address' => '$address'
+        ]);
+
+        $replaced['address']->shouldNotEqual('$address');
+    }
+
 	public function getMatchers()
 	{
 		return [

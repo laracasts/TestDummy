@@ -1,5 +1,6 @@
 <?php namespace Laracasts\TestDummy;
 
+use Exception;
 use Faker\Factory as Faker;
 
 class DynamicAttributeReplacer {
@@ -49,7 +50,7 @@ class DynamicAttributeReplacer {
         {
             if (is_string($value))
             {
-                $data[ $column ] = $this->updateColumnValue($value);
+                $data[$column] = $this->updateColumnValue($value);
             }
         }
 
@@ -66,14 +67,35 @@ class DynamicAttributeReplacer {
     {
         return preg_replace_callback('/\$([a-z]+)/', function ($matches)
         {
-            if ($this->isASupportedFakeType($fakeType = $matches[1]))
-            {
-                return call_user_func([$this, 'getFake' . ucwords($fakeType)]);
-            }
-
-            // If we don't recognize it, we'll just keep it as it is.
-            return $matches[0];
+            return $this->getFake($matches[0], $matches[1]);
         }, $value);
+    }
+
+    /**
+     * Get a fake substitute for the given variable.
+     *
+     * @param $original
+     * @param $fakeType
+     * @return mixed
+     */
+    public function getFake($original, $fakeType)
+    {
+        // We'll first see if TestDummy recognizes the requested fake type.
+        if ($this->isASupportedFakeType($fakeType))
+        {
+            return call_user_func([$this, 'getFake' . ucwords($fakeType)]);
+        }
+
+        // Otherwise, we'll fallback to using Faker's API. And, if Faker
+        // doesn't recognize it, we'll just keep it as it is.
+        try
+        {
+            return $this->fake->$fakeType;
+        }
+        catch(Exception $e)
+        {
+            return $original;
+        }
     }
 
     /**
