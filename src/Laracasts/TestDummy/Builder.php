@@ -132,7 +132,8 @@ class Builder {
     protected function mergeFixtureWithOverrides($type, array $fields)
     {
         // We'll merge the default fixture with any given overrides.
-        $data = array_merge($this->getFixture($type), $fields);
+        //$data = array_merge($this->getFixture($type), $fields);
+        $data = array_intersect_key($fields, $this->getFixture($type)) + $this->getFixture($type);
 
         // Next, we'll do any necessary dynamic replacements.
         return (new DynamicAttributeReplacer)->replace($data);

@@ -32,11 +32,21 @@ class BuilderSpec extends ObjectBehavior {
 
     function it_can_override_default_fixture(BuildableRepositoryInterface $builderRepository)
     {
-        $overrides = ['name' => 'Foobar', 'artist' => null];
+        $overrides = ['name' => 'Foobar'];
 
-        $builderRepository->build('Album', Argument::is($overrides))->willReturn($overrides);
+        $builderRepository->build('Album', $overrides)->willReturn($overrides);
 
         $this->build('Album', $overrides)->shouldReturn($overrides);
+    }
+
+    function it_does_not_set_fields_that_do_not_exist_in_the_fixtures_yaml_file_declaration(BuildableRepositoryInterface $builderRepository)
+    {
+        $overrides = ['name' => 'Foobar', 'shouldNot' => 'beIncluded'];
+        $expected = ['name' => 'Foobar'];
+
+        $builderRepository->build('Album', $expected)->willReturn($expected);
+
+        $this->build('Album', $overrides)->shouldReturn($expected);
     }
 
     function it_can_make_and_persist_an_entity(BuildableRepositoryInterface $builderRepository)
