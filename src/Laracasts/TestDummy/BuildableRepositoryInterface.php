@@ -3,7 +3,7 @@
 interface BuildableRepositoryInterface {
 
 	/**
-	 * Build the entity with attributes
+	 * Build the entity with attributes.
 	 *
 	 * @param string $type
 	 * @param array  $attributes
@@ -13,7 +13,7 @@ interface BuildableRepositoryInterface {
 	public function build($type, array $attributes);
 
 	/**
-	 * Persist the entity
+	 * Persist the entity.
 	 *
 	 * @param $entity
 	 * @return mixed
