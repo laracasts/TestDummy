@@ -3,22 +3,20 @@
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Convenience Laravel bootstrap for TestDummy
+ * Convenience Laravel bootstrap for TestDummy.
  * Factory::times(2)->create('Post')
- *
- * @package Laracasts\TestDummy
  */
 class Factory {
 
 	/**
-	 * The path to the fixtures file
+	 * The path to the fixtures file.
 	 *
 	 * @var array
 	 */
 	protected static $fixtures;
 
 	/**
-	 * Persistence layer
+	 * The persistence layer.
      *
      * @var BuildableRepositoryInterface
 	 */
@@ -73,7 +71,7 @@ class Factory {
 	}
 
 	/**
-	 * Set the fixtures path
+	 * Set the fixtures path.
 	 *
 	 * @param $basePath
 	 */
@@ -90,7 +88,7 @@ class Factory {
 	}
 
 	/**
-	 * Set the database provider
+	 * Set the database provider.
 	 *
 	 * @param null $provider
 	 * @return EloquentDatabaseProvider

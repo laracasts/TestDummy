@@ -1,23 +1,24 @@
 <?php namespace Laracasts\TestDummy;
 
+
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class EloquentDatabaseProvider implements BuildableRepositoryInterface {
 
     /**
-     * For preparing test data, we'll turn off
-     * mass assignment protection and such.
+     * Create a new EloquentDatabase Provider instance.
      */
     function __construct()
     {
-       Eloquent::unguard();
+        // We can disable mass assignment protection.
+        Eloquent::unguard();
     }
 
     /**
      * Build the entity with attributes.
      *
      * @param string $type
-     * @param array  $attributes
+     * @param array $attributes
      * @throws TestDummyException
      * @return Eloquent
      */
@@ -39,8 +40,8 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
      */
     public function save($entity)
     {
-       $entity->boot();
-       $entity->save();
+        $entity->boot();
+        $entity->save();
     }
 
 }

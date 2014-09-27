@@ -6,20 +6,25 @@ use RecursiveIteratorIterator;
 class FixturesFinder {
 
 	/**
-	 * The base directory for the search
+	 * The base directory to conduct the search.
 	 *
 	 * @var string
 	 */
 	protected $basePath;
 
 	/**
+     * The name of the fixtures file.
+     *
 	 * @var string
 	 */
 	private $fixturesFileName;
 
-	/**
-	 * Track down the fixtures.yml file
-	 */
+    /**
+     * Create a new FixturesFinder instance.
+     *
+     * @param $basePath
+     * @param string $fixturesFileName
+     */
 	function __construct($basePath, $fixturesFileName = 'fixtures')
 	{
 		$this->basePath = $basePath;
@@ -28,7 +33,7 @@ class FixturesFinder {
 
 	/**
 	 * Track down the fixtures file for TestDummy.
-	 * This way, the file can be placed just about anywhere
+	 * This way, the file can be placed just about anywhere.
 	 *
 	 * @throws TestDummyException
 	 * @return mixed
@@ -46,7 +51,7 @@ class FixturesFinder {
 	}
 
 	/**
-	 * Get the directory iterator
+	 * Get the directory iterator.
 	 *
 	 * @return RecursiveIteratorIterator
 	 */
@@ -65,8 +70,6 @@ class FixturesFinder {
 	 */
 	protected function isTheFixturesFile($name)
 	{
-		$fixturesName = $this->fixturesFileName;
-
-		return preg_match('/' . $fixturesName . '.ya?ml$/i', $name);
+        return preg_match('/' . $this->fixturesFileName . '.ya?ml$/i', $name);
 	}
 }
