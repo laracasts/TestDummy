@@ -147,6 +147,17 @@ array(4) {
 }
 ```
 
+However, in addition to those, TestDummy will recognize all supported [Faker](https://github.com/fzaninotto/Faker) properties. As such, we can do things like:
+
+```
+Profile:
+    username: $userName
+    company: $company
+    password: $password
+```
+
+Refer to the Faker docs for a massive list of options.
+
 #### Relationships
 
 Pay attention to how we reference relationship types:
