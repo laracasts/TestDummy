@@ -32,9 +32,9 @@ class BuilderSpec extends ObjectBehavior {
 
     function it_can_override_default_fixture(BuildableRepositoryInterface $builderRepository)
     {
-        $overrides = ['name' => 'Foobar'];
+        $overrides = ['name' => 'Foobar', 'artist' => null];
 
-        $builderRepository->build('Album', $overrides)->willReturn($overrides);
+        $builderRepository->build('Album', Argument::is($overrides))->willReturn($overrides);
 
         $this->build('Album', $overrides)->shouldReturn($overrides);
     }
@@ -64,6 +64,6 @@ class BuilderSpec extends ObjectBehavior {
 class AlbumStub {
     public function getAttributes()
     {
-       return ['name' => 'Back in Black'];
+       return ['name' => 'Back in Black', 'artist' => 'AC/DC'];
     }
 }
