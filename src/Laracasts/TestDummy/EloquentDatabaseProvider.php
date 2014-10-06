@@ -29,7 +29,12 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
             throw new TestDummyException("The {$type} model was not found.");
         }
 
-        return new $type($attributes);
+        $object = new $type($attributes);
+
+        // Re-enable mass assignment protection
+        Eloquent::reguard();
+
+        return $object;
     }
 
     /**
@@ -41,6 +46,9 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
     public function save($entity)
     {
         $entity->save();
+
+        // Re-enable mass assignment protection
+        Eloquent::reguard();
     }
 
 }
