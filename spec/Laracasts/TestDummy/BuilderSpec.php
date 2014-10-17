@@ -66,7 +66,7 @@ class BuilderSpec extends ObjectBehavior {
         $builderRepository->build(Argument::type('string'), Argument::type('array'))->shouldBeCalledTimes(3)->willReturn($stub);
         $builderRepository->save($stub)->shouldBeCalledTimes(3);
 
-        $this->setTimes(3)->create('Album')->shouldReturn([$stub, $stub, $stub]);
+        $this->setTimes(3)->create('Album')->toArray()->shouldReturn([$stub, $stub, $stub]);
     }
 
 }
