@@ -65,7 +65,7 @@ class DynamicAttributeReplacer {
      */
     protected function updateColumnValue($value)
     {
-        return preg_replace_callback('/\$([a-z]+)/', function ($matches)
+        return preg_replace_callback('/\$([a-zA-Z]+)/', function ($matches)
         {
             return $this->getFake($matches[0], $matches[1]);
         }, $value);
