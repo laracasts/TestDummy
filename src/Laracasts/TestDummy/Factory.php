@@ -84,7 +84,7 @@ class Factory {
 
         $finder = new FixturesFinder($basePath);
 
-        static::$fixtures = Yaml::parse($finder->find());
+        static::$fixtures = Yaml::parse(file_get_contents($finder->find()));
     }
 
     /**
