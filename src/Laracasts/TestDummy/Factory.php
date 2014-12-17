@@ -82,6 +82,11 @@ class Factory {
             $basePath = file_exists(base_path('tests')) ? base_path('tests') : app_path('tests');
         }
 
+        if ( ! is_dir($basePath))
+        {
+            throw new Exception('The path provided for the fixtures directory does not exist.');
+        }
+
         $finder = new FixturesFinder($basePath);
 
         static::$fixtures = Yaml::parse($finder->find());
