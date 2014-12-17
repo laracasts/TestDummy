@@ -13,7 +13,9 @@ class BuilderSpec extends ObjectBehavior {
 
     function let(BuildableRepositoryInterface $builderRepository)
     {
-        $fixtures = Yaml::parse(__DIR__.'/helpers/fixtures.yml');
+        $fixtures = Yaml::parse(
+            file_get_contents(__DIR__.'/helpers/fixtures.yml')
+        );
 
         $this->beConstructedWith($builderRepository, $fixtures);
     }
