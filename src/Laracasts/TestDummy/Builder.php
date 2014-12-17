@@ -1,6 +1,7 @@
 <?php namespace Laracasts\TestDummy;
 
 use Symfony\Component\Yaml\Yaml;
+use Illuminate\Support\Collection;
 
 class Builder {
 
@@ -112,7 +113,7 @@ class Builder {
     public function create($type, array $fields = [])
     {
         $times = $this->getTimes();
-        $entities = [];
+        $entities = new Collection;
 
         while ($times --)
         {
