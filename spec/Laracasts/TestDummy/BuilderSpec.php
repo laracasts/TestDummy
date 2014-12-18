@@ -40,6 +40,7 @@ class BuilderSpec extends ObjectBehavior {
     {
         $albumStub = new AlbumStub;
 
+        $builderRepository->getAttributes(Argument::any())->willReturn([]);
         $builderRepository->build('Album', Argument::type('array'))->willReturn($albumStub);
         $builderRepository->save($albumStub)->shouldBeCalled();
 
@@ -50,6 +51,7 @@ class BuilderSpec extends ObjectBehavior {
     {
         $stub = new AlbumStub;
 
+        $builderRepository->getAttributes(Argument::any())->willReturn([]);
         $builderRepository->build('Album', Argument::type('array'))->shouldBeCalledTimes(3)->willReturn($stub);
         $builderRepository->save($stub)->shouldBeCalledTimes(3);
 
