@@ -1,6 +1,5 @@
 <?php namespace Laracasts\TestDummy;
 
-
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class EloquentDatabaseProvider implements BuildableRepositoryInterface {
@@ -31,7 +30,7 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
 
         $object = new $type($attributes);
 
-        // Re-enable mass assignment protection
+        // Re-enable mass assignment protection.
         Eloquent::reguard();
 
         return $object;
@@ -47,7 +46,7 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
     {
         $entity->save();
 
-        // Re-enable mass assignment protection
+        // Re-enable mass assignment protection.
         Eloquent::reguard();
     }
 

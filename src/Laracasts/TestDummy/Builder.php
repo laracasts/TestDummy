@@ -1,6 +1,6 @@
 <?php namespace Laracasts\TestDummy;
 
-use Symfony\Component\Yaml\Yaml;
+use Illuminate\Support\Collection;
 
 class Builder {
 
@@ -70,93 +70,101 @@ class Builder {
     /**
      * Get a single fixture.
      *
-     * @param string $type
+     * @param string $name
      * @throws TestDummyException
      * @return mixed
      */
-    public function getFixture($type)
+    public function getFixture($name)
     {
-        if ( ! array_key_exists($type, $this->fixtures))
+        // We'll first check to see if they gave us a short name.
+        foreach ($this->fixtures as $fixture)
         {
-            $message = "You need to create a '{$type}' fixture in your fixtures.yml file.";
-
-            throw new TestDummyException($message);
+            if ($fixture->shortName == $name)
+            {
+                return $fixture;
+            }
         }
 
-        return $this->fixtures[ $type ];
+        // If not, we'll do a second sweep, and look for the class name.
+        foreach ($this->fixtures as $fixture)
+        {
+            if ($fixture->name == $name)
+            {
+                return $fixture;
+            }
+        }
+
+        throw new TestDummyException(
+            'Could not locate a factory with the name: ' . $name
+        );
     }
 
     /**
      * Build up an entity and populate it with dummy data.
      *
-     * @param string $type
+     * @param string $name
      * @param array $fields
      * @return array
      */
-    public function build($type, $fields = [])
+    public function build($name, $fields = [])
     {
-        $data = $this->mergeFixtureWithOverrides($type, $fields);
+        $data = $this->mergeFixtureWithOverrides($name, $fields);
 
         // We'll pass off the process of creating the entity.
         // That way, folks can use different persistence layers.
-        return $this->database->build($type, $data);
+        return $this->database->build($this->getFixture($name)->name, $data);
     }
 
     /**
-     * Build and persist an entity.
+     * Build and persist a named entity.
      *
-     * @param string $type
+     * @param string $name
      * @param array $fields
      * @return mixed
      */
-    public function create($type, array $fields = [])
+    public function create($name, array $fields = [])
     {
-        $times = $this->getTimes();
-        $entities = [];
-
-        while ($times --)
+        $entities = array_map(function() use($name, $fields)
         {
-            $entities[] = $this->persist($type, $fields);
-        }
+            return $this->persist($name, $fields);
+        }, range(1, $this->getTimes()));
 
-        return count($entities) > 1 ? $entities : $entities[0];
+        return count($entities) > 1 ? new Collection($entities) : $entities[0];
     }
 
     /**
      * Merge the fixture with any potential overrides.
      *
-     * @param $type
+     * @param $name
      * @param $fields
      * @return array
      */
-    protected function mergeFixtureWithOverrides($type, array $fields)
+    protected function mergeFixtureWithOverrides($name, array $fields)
     {
-        // We'll merge the default fixture with any given overrides.
-        $data = array_intersect_key($fields, $this->getFixture($type)) + $this->getFixture($type);
+        $attributes = $this->getFixture($name)->attributes;
 
-        // Next, we'll do any necessary dynamic replacements.
-        return (new DynamicAttributeReplacer)->replace($data);
+        return array_intersect_key($fields, $attributes) + $attributes;
     }
 
     /**
      * Persist the entity and any relationships.
      *
-     * @param string $type
+     * @param string $name
      * @param array $fields
      * @return mixed
      */
-    protected function persist($type, array $fields = [])
+    protected function persist($name, array $fields = [])
     {
-        $entity = $this->build($type, $fields);
+        $entity = $this->build($name, $fields);
 
         // We'll filter through all of the columns, and check
         // to see if there are any defined relationships. If there
         // are, then we'll need to create those records as well.
-        foreach ($entity->getAttributes() as $column => $value)
+        foreach ($entity->getAttributes() as $columnName => $value)
         {
-            if ($this->hasRelationshipAttribute($column, $value))
+            if ($relationship = $this->hasRelationshipAttribute($columnName, $value))
             {
-                $entity[ $column ] = $this->fetchRelationshipId($value['type']);
+                $entity[$columnName] = $this->fetchRelationship($relationship);
             }
         }
 
@@ -170,27 +178,32 @@ class Builder {
      *
      * @param $column
      * @param $value
-     * @return boolean
+     * @return mixed
      */
     protected function hasRelationshipAttribute($column, $value)
     {
-        return preg_match('/.+?_id$/', $column) and is_array($value);
+        if (preg_match('/^factory:(.+)$/i', $value, $matches))
+        {
+            return $matches[1];
+        }
+
+        return false;
     }
 
     /**
      * Get the ID for the relationship.
      *
-     * @param $type
+     * @param $relationshipType
      * @return integer
      */
-    protected function fetchRelationshipId($type)
+    protected function fetchRelationship($relationshipType)
     {
-        if ($this->isRelationshipAlreadyCreated($type))
+        if ($this->isRelationshipAlreadyCreated($relationshipType))
         {
-            return $this->relationshipIds[ $type ];
+            return $this->relationshipIds[$relationshipType];
         }
 
-        return $this->relationshipIds[ $type ] = $this->persist($type)->id;
+        return $this->relationshipIds[$relationshipType] = $this->persist($relationshipType)->id;
     }
 
     /**
@@ -201,7 +214,7 @@ class Builder {
      */
     protected function isRelationshipAlreadyCreated($relationshipType)
     {
-        return isset($this->relationshipIds[ $relationshipType ]);
+        return isset($this->relationshipIds[$relationshipType]);
     }
 
 }

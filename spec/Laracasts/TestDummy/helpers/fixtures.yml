@@ -1,8 +1,0 @@
-Album:
-  name: Back in Black
-
-Song:
-  name: Shook Me All Night Long
-  album_id:
-    type: Album
-  length: 200

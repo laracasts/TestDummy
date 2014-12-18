@@ -1,39 +1,22 @@
 <?php namespace Laracasts\TestDummy;
 
-use Symfony\Component\Yaml\Yaml;
+use Faker\Factory as Faker;
 
-/**
- * Convenience Laravel bootstrap for TestDummy.
- * Factory::times(2)->create('Post')
- */
 class Factory {
 
     /**
-     * The path to the fixtures file.
+     * The path to the factory files.
      *
      * @var array
      */
-    protected static $fixtures;
+    private static $factories;
 
     /**
      * The persistence layer.
      *
      * @var BuildableRepositoryInterface
      */
-    protected static $databaseProvider;
-
-    /**
-     * Create a new Builder instance.
-     *
-     * @return Builder
-     */
-    protected static function getInstance()
-    {
-        if ( ! static::$fixtures) static::setFixtures();
-        if ( ! static::$databaseProvider) static::setDatabaseProvider();
-
-        return new Builder(static::$databaseProvider, static::$fixtures);
-    }
+    private static $databaseProvider;
 
     /**
      * Fill an entity with test data, without saving it.
@@ -44,7 +27,7 @@ class Factory {
      */
     public static function build($type, array $attributes = [])
     {
-        return static::getInstance()->build($type, $attributes);
+        return static::instance()->build($type, $attributes);
     }
 
     /**
@@ -56,7 +39,7 @@ class Factory {
      */
     public static function create($type, array $attributes = [])
     {
-        return static::getInstance()->create($type, $attributes);
+        return static::instance()->create($type, $attributes);
     }
 
     /**
@@ -67,42 +50,74 @@ class Factory {
      */
     public static function times($times)
     {
-        return static::getInstance()->setTimes($times);
+        return static::instance()->setTimes($times);
     }
 
     /**
-     * Set the fixtures path.
+     * Create a new Builder instance.
+     *
+     * @return Builder
+     */
+    private static function instance()
+    {
+        if ( ! static::$factories) static::setFactoriesPath();
+        if ( ! static::$databaseProvider) static::setDatabaseProvider(new EloquentDatabaseProvider);
+
+        return new Builder(static::$databaseProvider, static::$factories);
+    }
+
+    /**
+     * Set the factories path.
      *
      * @param $basePath
      */
-    public static function setFixtures($basePath = null)
+    public static function setFactoriesPath($basePath = null)
     {
         if ( ! $basePath)
         {
-            $basePath = file_exists(base_path('tests')) ? base_path('tests') : app_path('tests');
+            $basePath = base_path('tests/factories');
         }
 
         if ( ! is_dir($basePath))
         {
-            throw new Exception('The path provided for the fixtures directory does not exist.');
+            throw new TestDummyException('The path provided for the factories directory does not exist.');
         }
 
-        $finder = new FixturesFinder($basePath);
-
-        static::$fixtures = Yaml::parse(file_get_contents($finder->find());
+        static::loadFactories($basePath);
     }
 
     /**
      * Set the database provider.
      *
-     * @param null $provider
-     * @return EloquentDatabaseProvider
+     * @param BuildableRepositoryInterface $provider
      */
-    public static function setDatabaseProvider($provider = null)
+    public static function setDatabaseProvider(BuildableRepositoryInterface $provider)
     {
-        $provider = $provider ?: new EloquentDatabaseProvider;
-
         return static::$databaseProvider = $provider;
+    }
+
+    /**
+     * Load the factories.
+     *
+     * @return void
+     */
+    public static function loadFactories($basePath)
+    {
+        $designer = new Designer;
+        $faker = Faker::create();
+        $finder = new FactoriesFinder($basePath);
+
+        $factory = function($name, $shortName, $attributes = []) use ($designer, $faker)
+        {
+            return $designer->define($name, $shortName, $attributes);
+        };
+
+        foreach ($finder->find() as $fixture)
+        {
+            include($fixture);
+        }
+
+        return static::$factories = $designer->definitions();
     }
 
 }
