@@ -19,9 +19,7 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
             throw new TestDummyException("The {$type} model was not found.");
         }
 
-        $object = (new $type)->forceFill($attributes);
-
-        return $object;
+        return (new $type)->forceFill($attributes);
     }
 
     /**
