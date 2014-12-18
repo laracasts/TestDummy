@@ -273,3 +273,29 @@ $factory('Album', [
   'name' => $faker->sentence
 ]);
 ```
+
+### FAQ
+
+#### How do I specify a different factories folder?
+
+Easy. Before your tests run, add:
+
+```
+Factory::$factoriesPath = 'app/tests/factories';
+```
+
+Now, TestDummy will look for your registered factories in the `app/tests/factories` folder.
+
+#### I want to control how my models are built and saved...
+
+Okay, just create your own implementation of `Laracasts\TestDummy\BuildableRepositoryInterface`. This contract is composed of two methods that you'll need to implement: `build` and `save`.
+
+Use `build` to describe how to populate your class/model with the given attributes. Use `save` to specify how the entity should be saved/persisted to the database.
+
+Once you have your implementation, before your tests run, add:
+
+```
+Factory::$databaseProvider = new MyCustomBuilder;
+```
+
+And that's it! Now, whenever you generate and save an entity, TestDummy will reference your custom implementation.
