@@ -5,7 +5,7 @@ use Faker\Factory as Faker;
 class FakerAdapter {
 
     /**
-     * The faker generator
+     * The faker generator.
      *
      * @var mixed
      */
