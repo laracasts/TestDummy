@@ -4,7 +4,7 @@
 
 TestDummy makes the process of preparing factories (dummy data) for your integration tests as easy as possible.
 
-> [Want a video introduction?](http://player.vimeo.com/external/92517786.hd.mp4?s=3a8c7522b63a063f6a9176ddfe0030e8)
+As easy as...
 
 ### Make a Post entity with dummy attributes.
 
@@ -34,7 +34,7 @@ array(4) {
 ```php
 use Laracasts\TestDummy\Factory;
 
-Factory::build('Post', ['title' => 'Override Title']);
+$post = Factory::build('Post', ['title' => 'Override Title']);
 ```
 
 Again, when cast to an array...
@@ -52,15 +52,13 @@ array(4) {
 }
 ```
 
-### Build a song entity, and save it to the database.
+### Build and persist a song entity
 
 ```php
 use Laracasts\TestDummy\Factory;
 
 $song = Factory::create('Song');
 ```
-
-If the `songs` table has relationships - like `album_id`, then the relationship entities will be built and saved, too.
 
 ### Create and persist a comment three times
 
@@ -70,114 +68,148 @@ use Laracasts\TestDummy\Factory;
 Factory::times(3)->create('Comment');
 ```
 
-In effect, this will give you three rows in your `comments` table. Again, if that table has relationships, those rows will be created with dummy data as well.
+In effect, this will give you three rows in your `comments` table. If that table has relationships (such as an owning Post), those related rows will be created with dummy data as well.
 
 ## Usage
 
 ### Step 1: Install
 
-Pull this package in through Composer, per usual:
+Pull this package in through Composer, just like any other package.
 
 ```js
 "require-dev": {
-    "laracasts/testdummy": "1.*"
+    "laracasts/testdummy": "~2.0"
 }
 ```
 
-### Step 2: Create a fixtures.yml file
+### Step 2: Create a Factories File
 
-TestDummy will fetch the default attributes for each of your entities from a `fixtures.yml` file that you place in your tests directory. If using Laravel, this file may be added anywhere under the `app/tests`
-directory. Here's an example of a `Post` and an `Author`.
+TestDummy isn't magic. You need to describe the type of data that should be generated.
 
-```yaml
-Post:
-  title: Hello World $string
-  body: $text
-  published_at: $date
-  author_id:
-    type: Author
+Within a `tests/factories` directory, you may create any number of PHP files that will automatically be
+loaded by TestDummy. Why don't you start with a generic `tests/factories/factories.php` file.
 
-Author:
-    name: John Doe $integer
-```
+Each factory file you create will automatically have access to two variables:
 
-Take note that the object name should correspond to your full namespaced model. For instance, if you use a `Models` namespace, then do:
+- `$factory`
+- `$faker`
 
-```yaml
-Models\Post:
-  title: Hello World $string
-```
-
-#### Dynamic Values
-
-Also, notice that we can use a number of dynamic values here:
-
-- `$string`: A simple placeholder word
-- `$text`: A paragraph of dummy text
-- `$date`: A date in the format of "Y-m-d H:i:s', suitable for database timestamps
-- `$integer`: Any unique number
-- `$digit`: A random number from 0 to 9
-- `$boolean`: A boolean as an integer
-
-Here are some usage examples:
-
-```yaml
-Post:
-    title: Some Post: Number $integer
-    body: $text
-    publish_date: $date
-    keywords: $string $string $string
-    active: $boolean
-```
-
-This might return something similar to:
-
-```bash
-array(4) {
-  ["title"]=>
-  string(19) "Some Post: Number 1"
-  ["body"]=>
-  string(255) "Laborum rerum saepe et et voluptatem rerum. Debitis reiciendis dolores perferendis fugit. Et impedit sit reprehenderit quisquam. Dolor enim et quia. Excepturi rerum esse rerum amet omnis modi. Sint molestiae consequatur dolore omnis soluta minima tempora."
-  ["publish_date"]=>
-  string(19) "2013-05-05 20:33:12"
-  ["keywords"]=>
-  string(30) "consequatur provident pariatur"
-  ["active"]=>
-  int(1)
-}
-```
-
-However, in addition to those, TestDummy will recognize all supported [Faker](https://github.com/fzaninotto/Faker) properties. As such, we can do things like:
+`$factory` is the function that you'll use to define new sets of data, such as the makeup of a Post or Album.
 
 ```
-Profile:
-    username: $userName
-    company: $company
-    password: $password
+$factory('Album', [
+    'name' => 'Rock or Bust',
+    'artist' => 'AC/DC'
+]);
 ```
 
-Refer to the Faker docs for a massive list of options.
+Think of this as your definition for any future generated albums - like when you do this:
+
+```
+use Laracasts\TestDummy\Factory;
+
+$album = Factory::create('Album');
+```
+
+#### Faker
+
+You probably won't want to hardcode strings for your various factories. It would be better to use random data. TestDummy pulls in the excellent [Faker](https://github.com/fzaninotto/Faker) library to assist you.
+
+In fact, any files in your `tests/factories/` directory will automatically have access to a `$faker` object that you may use. Here's an example:
+
+```
+$factory('Comment', [
+    'body' => $faker->sentence
+]);
+```
+
+Now, each time you generate a new comment, the `body` field will be set to a random sentence. Refer to the [Faker](https://github.com/fzaninotto/Faker) documentation for a massive list of available fakes.
 
 #### Relationships
 
-Pay attention to how we reference relationship types:
+If you wish, TestDummy can automatically generate your relationship models, as well. You just need to let TestDummy know the type of its associated model. TestDummy will then automatically build and save that relationship for you!
 
-```yaml
-Post:
-  title: Some Post: Number $integer
-  author_id:
-    type: Author
+Using the `Comment` example from above, it stands to reason that a comment belongs to a user, right? Let's set that up:
+
+```
+$factory('Comment', [
+    'user_id' => 'factory:User',
+    'body' => $faker->sentence
+]);
 ```
 
-You need to let TestDummy know the type of its associated model. TestDummy will then automatically build and save that relationship as well.
+That's it! Notice the special syntax here: "factory:", followed by the name of the associated class/model.
 
-> This means that, when you do, say, `Factory::create('Song')`, if one of your columns references a `album_id`, then TestDummy will save an `Album` record to the database, too. This
-will continue recursively. So, if the `Album` has an `artist_id`, then an artist will also be created.
+To illustrate this with one more example, if a song belongs to an album, and an album belongs to an artist, then we can easily represent this:
+
+```
+$factory('App\Song', [
+    'album_id' => 'factory:App\Album',
+    'name' => $faker->sentence
+]);
+
+$factory('App\Album', [
+    'artist_id' => 'factory:App\Artist',
+    'name' => $faker->word
+]);
+```
+
+$factory('App\Artist', [
+    'name' => $faker->word
+]);
+```
+
+So here's the cool thing: this will all work recursively. In translation, if you do...
+
+```
+use Laracasts\TestDummy\Factory;
+
+$song = Factory::create('App\Song');
+```
+
+...then not only will TestDummy build and persist a song to the database, but it'll also do the same for the related album, and its related artist. Nifty!
+
+#### Custom Factories
+
+So far, you've learned how to generate data, using the name of the class, like `App\User`. However, sometimes, you'll want to define multiple types of users, for the purposes of testing.
+
+While it's true that you can use overrides, like this:
+
+```
+Factory::create('App\User', ['role' => 'admin']);
+```
+
+...if this is something that you'll be doing often, create a custom factory, like so:
+
+```
+// A generic factory for users...
+
+$factory('App\User', [
+    'username' => $faker-username,
+    'password' => $faker->password,
+    'role'     => 'member'
+]);
+
+// And a custom one for administrators
+
+$factory('App\User', 'admin_user', [
+    'username' => $faker-username,
+    'password' => $faker->password,
+    'role'     => 'admin'
+]);
+```
+
+In the code snippet above, you're already familiar with the first example. For the second one, notice that we've added a "short name", or identifier for this special type of user factory. Now, whenever you want to quickly generate an admin user, you may do:
+
+```
+use Laracasts\TestDummy\Factory;
+
+$adminUser = Factory::create('admin_user');
+```
 
 ### Step 3: Setup
 
-When testing against a database, it's recommended that each test works with the exact same database environment and structure. That way, you can protect yourself against false positives.
-A SQLite database (maybe even one in memory) is a good choice in these cases.
+When testing against a database, it's recommended that each test works with the exact same database environment and structure. That way, you can protect yourself against false positives. A SQLite database (maybe even one in memory) is a good choice in these cases.
 
 ```php
 public function setUp()
@@ -188,8 +220,7 @@ public function setUp()
 }
 ```
 
-Or, if a DB in memory isn't possible, to save a bit of time, a helper `Laracasts\TestDummy\DbTestCase` class is included with this package. If you extend it,
-before each test, your test DB will be migrated (if necessary), and all DB modifications will be channelled through a transaction, and then rolled back on `tearDown`. This will give you a speed boost, and ensure that all tests start with the same database structure.
+Or, if a DB in memory isn't possible, to save a bit of time, a helper `Laracasts\TestDummy\DbTestCase` class is included with this package. If you extend it, before each test, your test DB will be migrated (if necessary), and all DB modifications will be channelled through a transaction, and then rolled back on `tearDown`. This will give you a speed boost, and ensure that all tests start with the same database structure.
 
 ```php
 
@@ -229,4 +260,17 @@ $album = Album::first(); // this will be created once automatically.
 $this->assertEquals(600, $album->getTotalLength());
 ```
 
+Now, of course, just make sure that you've registered a definition for a `Song` and `Album` in one of your factory files, and you're good to go!
 
+```
+// tests/factories/factories.php
+
+$factory('Song', [
+  'album_id' => 'factory:Album',
+  'name' => $faker->sentence
+]);
+
+$factory('Album', [
+  'name' => $faker->sentence
+]);
+```
