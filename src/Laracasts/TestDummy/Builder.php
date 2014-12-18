@@ -103,12 +103,12 @@ class Builder {
      * Build up an entity and populate it with dummy data.
      *
      * @param string $name
-     * @param array $fields
+     * @param array $attributes
      * @return array
      */
-    public function build($name, $fields = [])
+    public function build($name, $attributes = [])
     {
-        $data = $this->mergeFixtureWithOverrides($name, $fields);
+        $data = $this->mergeFixtureWithOverrides($name, $attributes);
 
         // We'll pass off the process of creating the entity.
         // That way, folks can use different persistence layers.
@@ -119,14 +119,14 @@ class Builder {
      * Build and persist a named entity.
      *
      * @param string $name
-     * @param array $fields
+     * @param array $attributes
      * @return mixed
      */
-    public function create($name, array $fields = [])
+    public function create($name, array $attributes = [])
     {
-        $entities = array_map(function() use($name, $fields)
+        $entities = array_map(function() use($name, $attributes)
         {
-            return $this->persist($name, $fields);
+            return $this->persist($name, $attributes);
         }, range(1, $this->getTimes()));
 
         return count($entities) > 1 ? new Collection($entities) : $entities[0];
@@ -136,16 +136,16 @@ class Builder {
      * Merge the fixture with any potential overrides.
      *
      * @param $name
-     * @param $fields
+     * @param $attributes
      * @return array
      */
-    protected function mergeFixtureWithOverrides($name, array $fields)
+    protected function mergeFixtureWithOverrides($name, array $attributes)
     {
         $attributes = $this->triggerFakerOnAttributes(
             $this->getFixture($name)->attributes
         );
 
-        return array_intersect_key($fields, $attributes) + $attributes;
+        return array_intersect_key($attributes, $attributes) + $attributes;
     }
 
     /**
@@ -172,12 +172,12 @@ class Builder {
      * Persist the entity and any relationships.
      *
      * @param string $name
-     * @param array $fields
+     * @param array $attributes
      * @return mixed
      */
-    protected function persist($name, array $fields = [])
+    protected function persist($name, array $attributes = [])
     {
-        $entity = $this->build($name, $fields);
+        $entity = $this->build($name, $attributes);
 
         // We'll filter through all of the columns, and check
         // to see if there are any defined relationships. If there
