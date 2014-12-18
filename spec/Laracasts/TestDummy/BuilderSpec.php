@@ -19,7 +19,7 @@ class BuilderSpec extends ObjectBehavior {
         $this->beConstructedWith($builderRepository, $factories);
     }
 
-    function xit_builds_entities(BuildableRepositoryInterface $builderRepository)
+    function it_builds_entities(BuildableRepositoryInterface $builderRepository)
     {
         $builderRepository->build('Album', Argument::type('array'))->willReturn('foo');
 
