@@ -141,11 +141,11 @@ class Builder {
      */
     protected function mergeFixtureWithOverrides($name, array $attributes)
     {
-        $attributes = $this->triggerFakerOnAttributes(
+        $factory = $this->triggerFakerOnAttributes(
             $this->getFixture($name)->attributes
         );
 
-        return array_intersect_key($attributes, $attributes) + $attributes;
+        return array_intersect_key($attributes, $factory) + $attributes;
     }
 
     /**
