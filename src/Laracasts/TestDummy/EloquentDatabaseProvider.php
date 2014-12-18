@@ -33,4 +33,15 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
         $entity->save();
     }
 
+    /**
+     * Get all attributes for the model.
+     *
+     * @param  object $entity
+     * @return array
+     */
+    public function getAttributes($entity)
+    {
+        return $entity->getAttributes();
+    }
+
 }

@@ -20,4 +20,12 @@ interface BuildableRepositoryInterface {
 	 */
 	public function save($entity);
 
-} 
+	/**
+	 * Get all attributes for the model.
+	 *
+	 * @param  object $entity
+	 * @return array
+	 */
+	public function getAttributes($entity);
+
+}
