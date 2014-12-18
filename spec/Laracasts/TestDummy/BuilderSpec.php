@@ -14,7 +14,7 @@ class BuilderSpec extends ObjectBehavior {
 
     function let(BuildableRepositoryInterface $builderRepository)
     {
-        $factories = Factory::loadFactories(__DIR__.'/helpers');
+        $factories = (new Factory(__DIR__.'/helpers'))->factories();
 
         $this->beConstructedWith($builderRepository, $factories);
     }
