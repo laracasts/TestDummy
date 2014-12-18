@@ -141,9 +141,31 @@ class Builder {
      */
     protected function mergeFixtureWithOverrides($name, array $fields)
     {
-        $attributes = $this->getFixture($name)->attributes;
+        $attributes = $this->triggerFakerOnAttributes(
+            $this->getFixture($name)->attributes
+        );
 
         return array_intersect_key($fields, $attributes) + $attributes;
+    }
+
+    /**
+     * Apply Faker dummy values to the attributes.
+     *
+     * @param  array  $attributes
+     * @return array
+     */
+    protected function triggerFakerOnAttributes(array $attributes)
+    {
+        // To ensure that we don't use the same Faker value for every
+        // single factory of the same name, all Faker properties are
+        // wrapped in closures.
+
+        // So we can now filter through our attributes and call these
+        // closures, which will generate the proper Faker values.
+        return array_map(function($attribute)
+        {
+            return is_callable($attribute) ? $attribute() : $attribute;
+        }, $attributes);
     }
 
     /**

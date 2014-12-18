@@ -1,7 +1,5 @@
 <?php namespace Laracasts\TestDummy;
 
-use Faker\Factory as Faker;
-
 class Factory {
 
     /**
@@ -104,7 +102,7 @@ class Factory {
     public static function loadFactories($basePath)
     {
         $designer = new Designer;
-        $faker = Faker::create();
+        $faker = new FakerAdapter;
         $finder = new FactoriesFinder($basePath);
 
         $factory = function($name, $shortName, $attributes = []) use ($designer, $faker)
