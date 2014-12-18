@@ -18,10 +18,7 @@ class FakerAdapter {
      */
     public function __construct($generator = null)
     {
-        if ($generator)
-        {
-            $this->generator = $generator;
-        }
+        $this->generator = $generator ?: Faker::create();
     }
 
     /**
@@ -31,11 +28,6 @@ class FakerAdapter {
      */
     public function generator()
     {
-        if ( ! $this->generator)
-        {
-            $this->generator = Faker::create();
-        }
-
         return $this->generator;
     }
 
