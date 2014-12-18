@@ -152,7 +152,6 @@ $factory('App\Album', [
     'artist_id' => 'factory:App\Artist',
     'name' => $faker->word
 ]);
-```
 
 $factory('App\Artist', [
     'name' => $faker->word
