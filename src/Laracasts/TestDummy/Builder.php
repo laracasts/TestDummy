@@ -178,13 +178,14 @@ class Builder {
     protected function persist($name, array $attributes = [])
     {
         $entity = $this->build($name, $attributes);
+        $attributes = $this->database->getAttributes($entity);
 
         // We'll filter through all of the columns, and check
         // to see if there are any defined relationships. If there
         // are, then we'll need to create those records as well.
-        foreach ($entity->getAttributes() as $columnName => $value)
+        foreach ($attributes as $columnName => $value)
         {
-            if ($relationship = $this->hasRelationshipAttribute($columnName, $value))
+            if ($relationship =  $this->hasRelationshipAttribute($columnName, $value))
             {
                 $entity[$columnName] = $this->fetchRelationship($relationship);
             }
