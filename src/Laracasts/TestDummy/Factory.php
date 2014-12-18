@@ -80,7 +80,7 @@ class Factory {
 
         if ( ! is_dir($basePath))
         {
-            throw new TestDummyException('The path provided for the factories directory does not exist.');
+            throw new TestDummyException("The path provided for the factories, {$basePath}, directory does not exist.");
         }
 
         static::loadFactories($basePath);
