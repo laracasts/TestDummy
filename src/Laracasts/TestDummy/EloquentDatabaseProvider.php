@@ -57,7 +57,7 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
 
         $object = (new $type)->fill($attributes);
 
-        Eloguent::reguard();
+        Eloquent::reguard();
 
         return $object;
     }
