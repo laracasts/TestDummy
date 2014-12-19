@@ -184,7 +184,7 @@ Factory::create('App\User', ['role' => 'admin']);
 // A generic factory for users...
 
 $factory('App\User', [
-    'username' => $faker-username,
+    'username' => $faker->username,
     'password' => $faker->password,
     'role'     => 'member'
 ]);
@@ -192,7 +192,7 @@ $factory('App\User', [
 // And a custom one for administrators
 
 $factory('App\User', 'admin_user', [
-    'username' => $faker-username,
+    'username' => $faker->username,
     'password' => $faker->password,
     'role'     => 'admin'
 ]);
