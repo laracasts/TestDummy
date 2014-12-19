@@ -19,7 +19,7 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
             throw new TestDummyException("The {$type} model was not found.");
         }
 
-        return (new $type)->forceFill($attributes);
+        return $this->fill($type, $attributes);
     }
 
     /**
@@ -42,6 +42,24 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
     public function getAttributes($entity)
     {
         return $entity->getAttributes();
+    }
+
+    /**
+     * Force fill an object with attributes.
+     *
+     * @param  string $type
+     * @param  array $attributes
+     * @return Eloquent
+     */
+    private function fill($type, $attributes)
+    {
+        Eloquent::unguard();
+
+        $object = (new $type)->fill($attributes);
+
+        Eloguent::reguard();
+
+        return $object;
     }
 
 }
