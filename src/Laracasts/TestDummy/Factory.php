@@ -12,7 +12,7 @@ class Factory {
     public static $factoriesPath = 'tests/factories';
 
     /**
-     * The user registered fatories.
+     * The user registered factories.
      *
      * @var array
      */
