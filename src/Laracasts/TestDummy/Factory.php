@@ -16,7 +16,7 @@ class Factory {
      *
      * @var array
      */
-    private $factories;
+    private static $factories;
 
     /**
      * The persistence layer.
@@ -38,9 +38,9 @@ class Factory {
             static::$factoriesPath = $factoriesPath;
         }
 
-        static::$databaseProvider = $databaseProvider ?: new EloquentDatabaseProvider;
+        $this->loadFactories();
 
-        $this->factories = $this->loadFactories();
+        static::$databaseProvider = $databaseProvider ?: new EloquentDatabaseProvider;
     }
 
     /**
@@ -50,7 +50,7 @@ class Factory {
      */
     public function factories()
     {
-        return $this->factories;
+        return static::$factories;
     }
 
     /**
@@ -109,43 +109,15 @@ class Factory {
     }
 
     /**
-     * Load the factories.
+     * Load the user provided factories.
      *
      * @return void
      */
     private function loadFactories()
     {
-        $this->assertThatFactoriesDirectoryExists($basePath = static::$factoriesPath);
-
-        $designer = new Designer;
-        $faker = new FakerAdapter;
-
-        $factory = function($name, $shortName, $attributes = []) use ($designer, $faker)
+        if ( ! static::$factories)
         {
-            return $designer->define($name, $shortName, $attributes);
-        };
-
-        foreach ((new FactoriesFinder($basePath))->find() as $fixture)
-        {
-            include($fixture);
-        }
-
-        return $designer->definitions();
-    }
-
-    /**
-     * Assert that the given factories directory exists.
-     *
-     * @param  string $basePath
-     * @return mixed
-     */
-    private function assertThatFactoriesDirectoryExists($basePath)
-    {
-        if ( ! is_dir($basePath))
-        {
-            throw new TestDummyException(
-                "The path provided for the factories, {$basePath}, directory does not exist."
-            );
+            static::$factories = (new FactoriesLoader)->load(static::$factoriesPath);
         }
     }
 
