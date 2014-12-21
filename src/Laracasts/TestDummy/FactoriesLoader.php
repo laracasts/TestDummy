@@ -39,7 +39,7 @@ class FactoriesLoader {
         if ( ! is_dir($basePath))
         {
             throw new TestDummyException(
-                "The path provided for the factories, {$basePath}, directory does not exist."
+                "The path provided for the factories directory, {$basePath}, does not exist."
             );
         }
     }
