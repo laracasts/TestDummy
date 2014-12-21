@@ -34,8 +34,7 @@ class Factory {
     public function __construct($factoriesPath = null, BuildableRepository $databaseProvider = null)
     {
         $this->loadFactories($factoriesPath);
-
-        static::$databaseProvider = $databaseProvider ?: new EloquentDatabaseProvider;
+        $this->setDatabaseProvider($databaseProvider);
     }
 
     /**
@@ -116,6 +115,20 @@ class Factory {
         if ( ! static::$factories)
         {
             static::$factories = (new FactoriesLoader)->load($factoriesPath);
+        }
+    }
+
+    /**
+     * Set the database provider for the data generation.
+     *
+     * @param  BuildableRepository $provider
+     * @return void
+     */
+    private function setDatabaseProvider($provider)
+    {
+        if ( ! static::$databaseProvider)
+        {
+            static::$databaseProvider = $provider ?: new EloquentDatabaseProvider;
         }
     }
 
