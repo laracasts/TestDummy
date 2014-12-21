@@ -185,7 +185,7 @@ class Builder {
         // are, then we'll need to create those records as well.
         foreach ($attributes as $columnName => $value)
         {
-            if ($relationship =  $this->hasRelationshipAttribute($columnName, $value))
+            if ($relationship =  $this->hasRelationshipAttribute($value))
             {
                 $entity[$columnName] = $this->fetchRelationship($relationship);
             }
@@ -199,11 +199,10 @@ class Builder {
     /**
      * Check if the attribute refers to a relationship.
      *
-     * @param $column
-     * @param $value
+     * @param string $value
      * @return mixed
      */
-    protected function hasRelationshipAttribute($column, $value)
+    protected function hasRelationshipAttribute($value)
     {
         if (preg_match('/^factory:(.+)$/i', $value, $matches))
         {
