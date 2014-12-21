@@ -33,12 +33,7 @@ class Factory {
      */
     public function __construct($factoriesPath = null, BuildableRepository $databaseProvider = null)
     {
-        if ($factoriesPath)
-        {
-            static::$factoriesPath = $factoriesPath;
-        }
-
-        $this->loadFactories();
+        $this->loadFactories($factoriesPath);
 
         static::$databaseProvider = $databaseProvider ?: new EloquentDatabaseProvider;
     }
@@ -111,13 +106,16 @@ class Factory {
     /**
      * Load the user provided factories.
      *
+     * @param  string $factoriesPath
      * @return void
      */
-    private function loadFactories()
+    private function loadFactories($factoriesPath)
     {
+        $factoriesPath = $factoriesPath ?: static::$factoriesPath;
+
         if ( ! static::$factories)
         {
-            static::$factories = (new FactoriesLoader)->load(static::$factoriesPath);
+            static::$factories = (new FactoriesLoader)->load($factoriesPath);
         }
     }
 
