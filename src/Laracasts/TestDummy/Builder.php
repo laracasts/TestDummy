@@ -225,7 +225,7 @@ class Builder {
             return $this->relationshipIds[$relationshipType];
         }
 
-        return $this->relationshipIds[$relationshipType] = $this->persist($relationshipType)->id;
+        return $this->relationshipIds[$relationshipType] = $this->persist($relationshipType)->getKey();
     }
 
     /**
