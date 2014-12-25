@@ -204,7 +204,7 @@ class Builder {
      */
     protected function hasRelationshipAttribute($value)
     {
-        if (preg_match('/^factory:(.+)$/i', $value, $matches))
+        if (is_string($value) && preg_match('/^factory:(.+)$/i', $value, $matches))
         {
             return $matches[1];
         }
