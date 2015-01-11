@@ -22,7 +22,7 @@ class Designer {
     {
         // The short name is optional. So we'll do a quick
         // check to make the API as simple as possible to use.
-        if (is_array($shortName))
+        if (is_array($shortName) || is_callable($shortName))
         {
             $attributes = $shortName;
             $shortName = '';

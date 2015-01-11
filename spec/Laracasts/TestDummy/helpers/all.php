@@ -5,3 +5,8 @@ $factory('Album', [
     'artist' => $faker->word
 ]);
 
+$factory('Artist', function ($faker) {
+    return [
+        'name' => $faker->name,
+    ];
+});

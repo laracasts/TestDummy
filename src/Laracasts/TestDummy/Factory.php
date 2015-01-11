@@ -1,6 +1,7 @@
 <?php namespace Laracasts\TestDummy;
 
 use Laracasts\TestDummy\BuildableRepositoryInterface as BuildableRepository;
+use Faker\Factory as Faker;
 
 class Factory {
 
@@ -26,15 +27,23 @@ class Factory {
     public static $databaseProvider;
 
     /**
+     * The generator.
+     *
+     * @var Faker
+     */
+    public static $generator;
+
+    /**
      * Create a new factory instance.
      *
      * @param string $factoriesPath
      * @param BuildableRepository $databaseProvider
      */
-    public function __construct($factoriesPath = null, BuildableRepository $databaseProvider = null)
+    public function __construct($factoriesPath = null, BuildableRepository $databaseProvider = null, $generator = null)
     {
         $this->loadFactories($factoriesPath);
         $this->setDatabaseProvider($databaseProvider);
+        $this->setGenerator($generator);
     }
 
     /**
@@ -55,6 +64,16 @@ class Factory {
     public function databaseProvider()
     {
         return static::$databaseProvider;
+    }
+
+    /**
+     * Get the generator.
+     *
+     * @return mixed
+     */
+    public function generator()
+    {
+        return static::$generator;
     }
 
     /**
@@ -99,7 +118,7 @@ class Factory {
      */
     private function getBuilder()
     {
-        return new Builder($this->databaseProvider(), $this->factories());
+        return new Builder($this->databaseProvider(), $this->factories(), $this->generator());
     }
 
     /**
@@ -129,6 +148,20 @@ class Factory {
         if ( ! static::$databaseProvider)
         {
             static::$databaseProvider = $provider ?: new EloquentDatabaseProvider;
+        }
+    }
+
+    /**
+     * Set the generator for random data generation.
+     *
+     * @param  Faker $generator
+     * @return void
+     */
+    private function setGenerator($generator)
+    {
+        if ( ! static::$generator)
+        {
+            static::$generator = $generator ?: Faker::create();
         }
     }
 

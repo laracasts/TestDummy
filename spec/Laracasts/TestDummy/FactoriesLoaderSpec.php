@@ -17,9 +17,10 @@ class FactoriesLoaderSpec extends ObjectBehavior {
         $factories = $this->load(__DIR__.'/helpers');
 
         $factories->shouldBeArray();
-        $factories->shouldHaveCount(1);
+        $factories->shouldHaveCount(2);
         $factories[0]->attributes->shouldHaveKey('name');
         $factories[0]->attributes->shouldHaveKey('artist');
+        $factories[1]->attributes->shouldHaveType('closure');
     }
 
     public function getMatchers()
