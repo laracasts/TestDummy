@@ -46,8 +46,8 @@ class FakerAdapter {
     /**
      * Ensure that the faked value is optional.
      *
-     * @param  float $weight
-     * @param  mixed $default
+     * @param  float  $weight
+     * @param  mixed  $default
      * @return static
      */
     public function optional($weight = 0.5, $default = null)
@@ -56,10 +56,10 @@ class FakerAdapter {
     }
 
     /**
-     * Wrapped all faker property access in a closure
-     * to ensure a random value for each usage.
+     * Wrap all faker property access in a closure
+     * to ensure a random value each time.
      *
-     * @param  string $name
+     * @param  string  $name
      * @return closure
      */
     public function __get($name)
@@ -71,10 +71,11 @@ class FakerAdapter {
     }
 
    /**
-     * Wrapped all faker method calls in a closure
-     * to ensure a random value for each usage.
+     * Wrap all faker method calls in a closure
+     * to ensure a random value each time.
      *
-     * @param  string $name
+     * @param  string  $method
+     * @param  array   $params
      * @return closure
      */
     public function __call($method, $params)
