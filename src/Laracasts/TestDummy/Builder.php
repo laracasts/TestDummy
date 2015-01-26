@@ -145,7 +145,7 @@ class Builder {
             $this->getFixture($name)->attributes
         );
 
-        return array_intersect_key($attributes, $factory) + $factory;
+        return array_merge($factory, $attributes);
     }
 
     /**
