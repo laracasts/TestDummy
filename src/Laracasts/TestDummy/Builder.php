@@ -153,7 +153,7 @@ class Builder {
         $factory = $this->getFixture($name)->attributes;
         if (is_callable($factory))
         {
-            $factory = $factory($this->generator);
+            $factory = $factory($this->generator, $attributes);
             if ( ! is_array($factory))
             {
                 throw new TestDummyException("Factory [$name] closure must return an array of attributes.");

@@ -44,6 +44,15 @@ class BuilderSpec extends ObjectBehavior {
         $this->build('Artist')->shouldReturn('foo');
     }
 
+    function it_can_override_defaults_in_a_closure(BuildableRepositoryInterface $builderRepository)
+    {
+        $overrides = [ 'name' => 'The Boogaloos' ];
+
+        $builderRepository->build('Artist', $overrides)->willReturn($overrides);
+
+        $this->build('Artist', $overrides)->shouldReturn($overrides);
+    }
+
     function it_can_persist_an_entity(BuildableRepositoryInterface $builderRepository)
     {
         $albumStub = new AlbumStub;
