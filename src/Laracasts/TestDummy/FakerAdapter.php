@@ -32,6 +32,16 @@ class FakerAdapter {
     }
 
     /**
+     * Set the locale of the generator
+     *
+     * @param string $locale
+     */
+    public function locale($locale)
+    {
+        $this->generator = Faker::create($locale);
+    }
+
+    /**
      * Ensure that the faked value is unique.
      *
      * @param  boolean $reset
