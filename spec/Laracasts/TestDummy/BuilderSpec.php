@@ -40,7 +40,7 @@ class BuilderSpec extends ObjectBehavior {
     {
         $albumStub = new AlbumStub;
 
-        $builderRepository->getAttributes(Argument::any())->willReturn([array_keys($albumStub->getAttributes())]);
+        $builderRepository->getAttributes(Argument::any())->willReturn($albumStub->getAttributes());
         $builderRepository->build('Album', Argument::type('array'))->willReturn($albumStub);
         $builderRepository->save($albumStub)->shouldBeCalled();
 
