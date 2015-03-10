@@ -40,7 +40,7 @@ class BuilderSpec extends ObjectBehavior {
     {
         $albumStub = new AlbumStub;
 
-        $builderRepository->getAttributes(Argument::any())->willReturn([]);
+        $builderRepository->getAttributes(Argument::any())->willReturn([array_keys($albumStub->getAttributes())]);
         $builderRepository->build('Album', Argument::type('array'))->willReturn($albumStub);
         $builderRepository->save($albumStub)->shouldBeCalled();
 
@@ -67,6 +67,6 @@ class BuilderSpec extends ObjectBehavior {
 class AlbumStub {
     public function getAttributes()
     {
-       return ['name' => 'Back in Black', 'artist' => 'AC/DC'];
+       return ['name' => 'Back in Black', 'artist' => 'AC/DC', 'created_at' => new \DateTime('July 21, 1980')];
     }
 }
