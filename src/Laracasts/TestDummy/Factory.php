@@ -58,6 +58,18 @@ class Factory {
     }
 
     /**
+     * Build an array of dummy attributes for an entity.
+     *
+     * @param string $name
+     * @param array $attributes
+     * @return array
+     */
+    public static function attributesFor($name, array $attributes = [])
+    {
+        return (new static)->getBuilder()->attributesFor($name, $attributes);
+    }
+
+    /**
      * Fill an entity with test data, without saving it.
      *
      * @param string $name
