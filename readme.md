@@ -76,7 +76,7 @@ use Laracasts\TestDummy\Factory;
 Factory::times(3)->create('Comment');
 ```
 
-In effect, this will give you three rows in your `comments` table. If that table has relationships (such as an owning ost), those related rows will be created with dummy data as well.
+In effect, this will give you three rows in your `comments` table. If that table has relationships (such as an owning Post), those related rows will be created with dummy data as well.
 
 ## Usage
 
