@@ -1,6 +1,7 @@
 <?php
 
 namespace spec\Laracasts\TestDummy;
+use Faker\Factory as Faker;
 
 use Laracasts\TestDummy\FixturesFinder;
 use PhpSpec\ObjectBehavior;
@@ -15,8 +16,9 @@ class BuilderSpec extends ObjectBehavior {
     function let(BuildableRepositoryInterface $builderRepository)
     {
         $factories = (new Factory(__DIR__.'/helpers'))->factories();
+        $faker = Faker::create();
 
-        $this->beConstructedWith($builderRepository, $factories);
+        $this->beConstructedWith($builderRepository, $factories, $faker);
     }
 
     function it_gets_attributes_for_a_model()
@@ -41,6 +43,22 @@ class BuilderSpec extends ObjectBehavior {
         $builderRepository->build('Album', $overrides)->willReturn($overrides);
 
         $this->build('Album', $overrides)->shouldReturn($overrides);
+    }
+
+    function it_can_handle_attributes_returned_from_closure(BuildableRepositoryInterface $builderRepository)
+    {
+        $builderRepository->build('Artist', Argument::type('array'))->willReturn('foo');
+
+        $this->build('Artist')->shouldReturn('foo');
+    }
+
+    function it_can_override_defaults_in_a_closure(BuildableRepositoryInterface $builderRepository)
+    {
+        $overrides = ['name' => 'The Boogaloos'];
+
+        $builderRepository->build('Artist', $overrides)->willReturn($overrides);
+
+        $this->build('Artist', $overrides)->shouldReturn($overrides);
     }
 
     function it_can_persist_an_entity(BuildableRepositoryInterface $builderRepository)

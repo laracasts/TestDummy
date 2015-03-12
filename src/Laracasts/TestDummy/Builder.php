@@ -34,15 +34,24 @@ class Builder
     private $database;
 
     /**
+     * The faker generator.
+     *
+     * @var mixed
+     */
+    private $generator;
+
+    /**
      * Create a new Builder instance.
      *
      * @param BuildableRepositoryInterface $database
      * @param array                        $fixtures
+     * @param \Faker\Factory               $generator
      */
-    public function __construct(BuildableRepositoryInterface $database, array $fixtures)
+    public function __construct(BuildableRepositoryInterface $database, array $fixtures, $generator)
     {
         $this->database = $database;
         $this->fixtures = $fixtures;
+        $this->generator = $generator;
     }
 
     /**
@@ -146,12 +155,21 @@ class Builder
      * @param  string $name
      * @param  array  $attributes
      * @return array
+     * @throws TestDummyException
      */
     protected function mergeFixtureWithOverrides($name, array $attributes)
     {
-        $factory = $this->triggerFakerOnAttributes(
-            $this->getFixture($name)->attributes
-        );
+        $factory = $this->getFixture($name)->attributes;
+
+        if (is_callable($factory)) {
+            $factory = $factory($this->generator, $attributes);
+
+            if ( ! is_array($factory)) {
+                throw new TestDummyException("Factory [$name] closure must return an array of attributes.");
+            }
+        }
+
+        $factory = $this->triggerFakerOnAttributes($factory);
 
         return array_merge($factory, $attributes);
     }
