@@ -33,6 +33,10 @@ class FactoriesFinder
         $files = [];
 
         foreach ($this->getDirectoryIterator() as $file) {
+            $extension = pathinfo($file)['extension'];
+
+            if ($extension !== 'php') continue;
+
             $files[] = $file->getPathname();
         }
 

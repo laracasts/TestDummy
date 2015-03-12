@@ -22,4 +22,17 @@ class FactoriesFinderSpec extends ObjectBehavior
 		$this->find()->shouldBe([__DIR__.'/helpers/all.php']);
 	}
 
+	function it_ignores_non_php_files()
+	{
+		$dir = __DIR__.'/helpers';
+		$notPhpFile = $dir .'/foo.txt';
+
+		// We'll create a file that should not be included...
+		file_put_contents($notPhpFile, '');
+
+		$this->find()->shouldBe([$dir.'/all.php']);
+
+		unlink($notPhpFile);
+	}
+
 }
