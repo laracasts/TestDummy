@@ -14,7 +14,7 @@ class Builder {
     /**
      * The number of times to create the record.
      *
-     * @var int
+     * @var integer
      */
     protected $times = 1;
 
@@ -36,7 +36,7 @@ class Builder {
      * Create a new Builder instance.
      *
      * @param BuildableRepositoryInterface $database
-     * @param array $fixtures
+     * @param array                        $fixtures
      */
     public function __construct(BuildableRepositoryInterface $database, array $fixtures)
     {
@@ -47,7 +47,7 @@ class Builder {
     /**
      * Get the number of times to create a record.
      *
-     * @return int
+     * @return integer
      */
     protected function getTimes()
     {
@@ -57,7 +57,7 @@ class Builder {
     /**
      * Set the number of times to create records.
      *
-     * @param $count
+     * @param  integer $count
      * @return $this
      */
     public function setTimes($count)
@@ -70,7 +70,7 @@ class Builder {
     /**
      * Get a single fixture.
      *
-     * @param string $name
+     * @param  string $name
      * @throws TestDummyException
      * @return mixed
      */
@@ -102,8 +102,8 @@ class Builder {
     /**
      * Build up an entity and populate it with dummy data.
      *
-     * @param string $name
-     * @param array $attributes
+     * @param  string $name
+     * @param  array  $attributes
      * @return array
      */
     public function build($name, $attributes = [])
@@ -118,8 +118,8 @@ class Builder {
     /**
      * Build and persist a named entity.
      *
-     * @param string $name
-     * @param array $attributes
+     * @param  string $name
+     * @param  array  $attributes
      * @return mixed
      */
     public function create($name, array $attributes = [])
@@ -135,8 +135,8 @@ class Builder {
     /**
      * Merge the fixture with any potential overrides.
      *
-     * @param $name
-     * @param $attributes
+     * @param  string $name
+     * @param  array  $attributes
      * @return array
      */
     protected function mergeFixtureWithOverrides($name, array $attributes)
@@ -151,7 +151,7 @@ class Builder {
     /**
      * Apply Faker dummy values to the attributes.
      *
-     * @param  array  $attributes
+     * @param  array $attributes
      * @return array
      */
     protected function triggerFakerOnAttributes(array $attributes)
@@ -175,8 +175,8 @@ class Builder {
     /**
      * Persist the entity and any relationships.
      *
-     * @param string $name
-     * @param array $attributes
+     * @param  string $name
+     * @param  array  $attributes
      * @return mixed
      */
     protected function persist($name, array $attributes = [])
@@ -203,7 +203,7 @@ class Builder {
     /**
      * Check if the attribute refers to a relationship.
      *
-     * @param string $value
+     * @param  string $value
      * @return mixed
      */
     protected function hasRelationshipAttribute($value)
@@ -219,7 +219,7 @@ class Builder {
     /**
      * Get the ID for the relationship.
      *
-     * @param $relationshipType
+     * @param  string $relationshipType
      * @return integer
      */
     protected function fetchRelationship($relationshipType, $attributes)
@@ -235,7 +235,7 @@ class Builder {
     /**
      * Determine if the provided relationship type has already been persisted.
      *
-     * @param $relationshipType
+     * @param  string $relationshipType
      * @return bool
      */
     protected function isRelationshipAlreadyCreated($relationshipType)
