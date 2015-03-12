@@ -102,8 +102,8 @@ class Builder {
     /**
      * Build an array of dummy attributes for an entity.
      *
-     * @param string $name
-     * @param array $attributes
+     * @param  string $name
+     * @param  array  $attributes
      * @return array
      */
     public function attributesFor($name, $attributes = [])
