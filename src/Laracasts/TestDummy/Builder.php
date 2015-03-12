@@ -232,7 +232,7 @@ class Builder
             return $this->relationshipIds[$relationshipType];
         }
 
-        return $this->relationshipIds[$relationshipType] = $this->persist($relationshipType, $attributes)->id;
+        return $this->relationshipIds[$relationshipType] = $this->persist($relationshipType, $attributes)->getKey();
     }
 
     /**
