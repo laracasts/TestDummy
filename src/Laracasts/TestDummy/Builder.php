@@ -141,7 +141,7 @@ class Builder {
             return $this->persist($name, $attributes);
         }, range(1, $this->getTimes()));
 
-        return count($entities) > 1 ? new Collection($entities) : $entities[0];
+        return  new Collection($entities);
     }
 
     /**
