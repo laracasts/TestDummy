@@ -30,6 +30,8 @@ class DbTestCase extends TestCase
     public function tearDown()
     {
         DB::rollback();
+
+        parent::tearDown();
     }
 
 }
