@@ -1,6 +1,7 @@
 <?php namespace Laracasts\TestDummy;
 
-class Definition {
+class Definition
+{
 
     /**
      * The class name for the factory.
@@ -28,7 +29,7 @@ class Definition {
      *
      * @param string $name
      * @param string $shortName
-     * @param array $attributes
+     * @param array  $attributes
      */
     public function __construct($name, $shortName, $attributes = [])
     {

@@ -2,7 +2,8 @@
 
 use Faker\Factory as Faker;
 
-class FakerAdapter {
+class FakerAdapter
+{
 
     /**
      * The faker generator.
@@ -56,8 +57,8 @@ class FakerAdapter {
     /**
      * Ensure that the faked value is optional.
      *
-     * @param  float  $weight
-     * @param  mixed  $default
+     * @param  float $weight
+     * @param  mixed $default
      * @return static
      */
     public function optional($weight = 0.5, $default = null)
@@ -69,29 +70,27 @@ class FakerAdapter {
      * Wrap all faker property access in a closure
      * to ensure a random value each time.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return closure
      */
     public function __get($name)
     {
-        return function() use ($name)
-        {
+        return function () use ($name) {
             return $this->generator()->$name;
         };
     }
 
-   /**
+    /**
      * Wrap all faker method calls in a closure
      * to ensure a random value each time.
      *
-     * @param  string  $method
-     * @param  array   $params
+     * @param  string $method
+     * @param  array  $params
      * @return closure
      */
     public function __call($method, $params)
     {
-        return function() use ($method, $params)
-        {
+        return function () use ($method, $params) {
             return call_user_func_array([$this->generator(), $method], $params);
         };
     }

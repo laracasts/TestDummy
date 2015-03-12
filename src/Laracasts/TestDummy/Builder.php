@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Collection;
 
-class Builder {
+class Builder
+{
 
     /**
      * All user-defined fixtures.
@@ -77,19 +78,15 @@ class Builder {
     public function getFixture($name)
     {
         // We'll first check to see if they gave us a short name.
-        foreach ($this->fixtures as $fixture)
-        {
-            if ($fixture->shortName == $name)
-            {
+        foreach ($this->fixtures as $fixture) {
+            if ($fixture->shortName == $name) {
                 return $fixture;
             }
         }
 
         // If not, we'll do a second sweep, and look for the class name.
-        foreach ($this->fixtures as $fixture)
-        {
-            if ($fixture->name == $name)
-            {
+        foreach ($this->fixtures as $fixture) {
+            if ($fixture->name == $name) {
                 return $fixture;
             }
         }
@@ -136,8 +133,7 @@ class Builder {
      */
     public function create($name, array $attributes = [])
     {
-        $entities = array_map(function() use($name, $attributes)
-        {
+        $entities = array_map(function () use ($name, $attributes) {
             return $this->persist($name, $attributes);
         }, range(1, $this->getTimes()));
 
@@ -174,8 +170,7 @@ class Builder {
 
         // So we can now filter through our attributes and call these
         // closures, which will generate the proper Faker values.
-        return array_map(function($attribute)
-        {
+        return array_map(function ($attribute) {
             $attribute = is_callable($attribute) ? $attribute() : $attribute;
 
             // It's possible that the called Faker method returned an array.
@@ -199,10 +194,8 @@ class Builder {
         // We'll filter through all of the columns, and check
         // to see if there are any defined relationships. If there
         // are, then we'll need to create those records as well.
-        foreach ($databaseAttributes as $columnName => $value)
-        {
-            if ($relationship =  $this->hasRelationshipAttribute($value))
-            {
+        foreach ($databaseAttributes as $columnName => $value) {
+            if ($relationship = $this->hasRelationshipAttribute($value)) {
                 $entity[$columnName] = $this->fetchRelationship($relationship, $attributes);
             }
         }
@@ -220,8 +213,7 @@ class Builder {
      */
     protected function hasRelationshipAttribute($value)
     {
-        if (preg_match('/^factory:(.+)$/i', $value, $matches))
-        {
+        if (preg_match('/^factory:(.+)$/i', $value, $matches)) {
             return $matches[1];
         }
 
@@ -236,8 +228,7 @@ class Builder {
      */
     protected function fetchRelationship($relationshipType, $attributes)
     {
-        if ($this->isRelationshipAlreadyCreated($relationshipType))
-        {
+        if ($this->isRelationshipAlreadyCreated($relationshipType)) {
             return $this->relationshipIds[$relationshipType];
         }
 

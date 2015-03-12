@@ -3,7 +3,8 @@
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class FactoriesFinder {
+class FactoriesFinder
+{
 
     /**
      * The base directory to conduct the search.
@@ -31,8 +32,7 @@ class FactoriesFinder {
     {
         $files = [];
 
-        foreach($this->getDirectoryIterator() as $file)
-        {
+        foreach ($this->getDirectoryIterator() as $file) {
             $files[] = $file->getPathname();
         }
 

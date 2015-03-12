@@ -2,7 +2,8 @@
 
 use Laracasts\TestDummy\BuildableRepositoryInterface as BuildableRepository;
 
-class Factory {
+class Factory
+{
 
     /**
      * The path to the factories directory.
@@ -28,7 +29,7 @@ class Factory {
     /**
      * Create a new factory instance.
      *
-     * @param string $factoriesPath
+     * @param string              $factoriesPath
      * @param BuildableRepository $databaseProvider
      */
     public function __construct($factoriesPath = null, BuildableRepository $databaseProvider = null)
@@ -61,7 +62,7 @@ class Factory {
      * Build an array of dummy attributes for an entity.
      *
      * @param string $name
-     * @param array $attributes
+     * @param array  $attributes
      * @return array
      */
     public static function attributesFor($name, array $attributes = [])
@@ -124,8 +125,7 @@ class Factory {
     {
         $factoriesPath = $factoriesPath ?: static::$factoriesPath;
 
-        if ( ! static::$factories)
-        {
+        if ( ! static::$factories) {
             static::$factories = (new FactoriesLoader)->load($factoriesPath);
         }
     }
@@ -138,8 +138,7 @@ class Factory {
      */
     private function setDatabaseProvider($provider)
     {
-        if ( ! static::$databaseProvider)
-        {
+        if ( ! static::$databaseProvider) {
             static::$databaseProvider = $provider ?: new EloquentDatabaseProvider;
         }
     }

@@ -1,6 +1,7 @@
 <?php namespace Laracasts\TestDummy;
 
-class FactoriesLoader {
+class FactoriesLoader
+{
 
     /**
      * Load the factories.
@@ -15,13 +16,11 @@ class FactoriesLoader {
         $designer = new Designer;
         $faker = new FakerAdapter;
 
-        $factory = function($name, $shortName, $attributes = []) use ($designer, $faker)
-        {
+        $factory = function ($name, $shortName, $attributes = []) use ($designer, $faker) {
             return $designer->define($name, $shortName, $attributes);
         };
 
-        foreach ((new FactoriesFinder($basePath))->find() as $file)
-        {
+        foreach ((new FactoriesFinder($basePath))->find() as $file) {
             include($file);
         }
 
@@ -33,11 +32,11 @@ class FactoriesLoader {
      *
      * @param  string $basePath
      * @return mixed
+     * @throws TestDummyException
      */
     private function assertThatFactoriesDirectoryExists($basePath)
     {
-        if ( ! is_dir($basePath))
-        {
+        if ( ! is_dir($basePath)) {
             throw new TestDummyException(
                 "The path provided for the factories directory, {$basePath}, does not exist."
             );
