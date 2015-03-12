@@ -22,6 +22,10 @@ class FactoriesLoader {
 
         foreach ((new FactoriesFinder($basePath))->find() as $file)
         {
+            $basename = basename($file);
+            if (substr($basename, 0, 1) === '.') {
+                continue;
+            }
             include($file);
         }
 
