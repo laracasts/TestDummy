@@ -6,7 +6,7 @@ TestDummy makes the process of preparing factories (dummy data) for your integra
 
 As easy as...
 
-### Make a Post entity with dummy attributes.
+### Build a Post model with dummy attributes.
 
 ```php
 use Laracasts\TestDummy\Factory;
@@ -29,7 +29,7 @@ array(4) {
 }
 ```
 
-### Build a post, but override the default title
+### Build a post, but override the default title.
 
 ```php
 use Laracasts\TestDummy\Factory;
@@ -52,7 +52,15 @@ array(4) {
 }
 ```
 
-### Build and persist a song entity
+### Build an array of attributes for the model.
+
+```php
+$post = Factory::attributesFor('Post');
+```
+
+The difference between `build()` an `attributesFor()` is that the former will return an instance of the given model type (such as `Post`). The latter will simply return an array of the appropriate attributes, which can be useful in some situations. 
+
+### Build and persist a song entity.
 
 ```php
 use Laracasts\TestDummy\Factory;
@@ -60,7 +68,7 @@ use Laracasts\TestDummy\Factory;
 $song = Factory::create('Song');
 ```
 
-### Create and persist a comment three times
+### Create and persist a comment three times.
 
 ```php
 use Laracasts\TestDummy\Factory;
@@ -68,7 +76,7 @@ use Laracasts\TestDummy\Factory;
 Factory::times(3)->create('Comment');
 ```
 
-In effect, this will give you three rows in your `comments` table. If that table has relationships (such as an owning Post), those related rows will be created with dummy data as well.
+In effect, this will give you three rows in your `comments` table. If that table has relationships (such as an owning ost), those related rows will be created with dummy data as well.
 
 ## Usage
 
@@ -96,7 +104,7 @@ Each factory file you create will automatically have access to two variables:
 
 `$factory` is the function that you'll use to define new sets of data, such as the makeup of a Post or Album.
 
-```
+```php
 $factory('Album', [
     'name' => 'Rock or Bust',
     'artist' => 'AC/DC'
@@ -105,7 +113,7 @@ $factory('Album', [
 
 Think of this as your definition for any future generated albums - like when you do this:
 
-```
+```php
 use Laracasts\TestDummy\Factory;
 
 $album = Factory::create('Album');
@@ -117,7 +125,7 @@ You probably won't want to hardcode strings for your various factories. It would
 
 In fact, any files in your `tests/factories/` directory will automatically have access to a `$faker` object that you may use. Here's an example:
 
-```
+```php
 $factory('Comment', [
     'body' => $faker->sentence
 ]);
@@ -131,7 +139,7 @@ If you wish, TestDummy can automatically generate your relationship models, as w
 
 Using the `Comment` example from above, it stands to reason that a comment belongs to a user, right? Let's set that up:
 
-```
+```php
 $factory('Comment', [
     'user_id' => 'factory:User',
     'body' => $faker->sentence
@@ -142,7 +150,7 @@ That's it! Notice the special syntax here: "factory:", followed by the name of t
 
 To illustrate this with one more example, if a song belongs to an album, and an album belongs to an artist, then we can easily represent this:
 
-```
+```php
 $factory('App\Song', [
     'album_id' => 'factory:App\Album',
     'name' => $faker->sentence
@@ -160,7 +168,7 @@ $factory('App\Artist', [
 
 So here's the cool thing: this will all work recursively. In translation, if you do...
 
-```
+```php
 use Laracasts\TestDummy\Factory;
 
 $song = Factory::create('App\Song');
@@ -174,13 +182,13 @@ So far, you've learned how to generate data, using the name of the class, like `
 
 While it's true that you can use overrides, like this:
 
-```
+```php
 Factory::create('App\User', ['role' => 'admin']);
 ```
 
 ...if this is something that you'll be doing often, create a custom factory, like so:
 
-```
+```php
 // A generic factory for users...
 
 $factory('App\User', [
@@ -200,11 +208,27 @@ $factory('App\User', 'admin_user', [
 
 In the code snippet above, you're already familiar with the first example. For the second one, notice that we've added a "short name", or identifier for this special type of user factory. Now, whenever you want to quickly generate an admin user, you may do:
 
-```
+```php
 use Laracasts\TestDummy\Factory;
 
 $adminUser = Factory::create('admin_user');
 ```
+
+#### Defining with Closures
+
+Alternatively, you may pass a closure as the second argument to the `$factory` method. This can be useful for situations where you need a bit more control over the values that you assign to each attribute. Here's an example:
+
+```php
+$factory('App\Artist', function($faker, $overrides) {
+    $name = sprintf('Some Band Named %s', $faker->word);
+    
+    return [
+        'name' => $name
+    ];
+});
+```
+
+Of course, just be sure to return an array from this closure. If you don't, an exception will be thrown.
 
 ### Step 3: Setup
 
