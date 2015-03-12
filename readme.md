@@ -58,7 +58,7 @@ array(4) {
 $post = Factory::attributesFor('Post');
 ```
 
-The difference between `build()` an `attributesFor()` is that the former will return an instance of the given model type (such as `Post`). The latter will simply return an array of the appropriate attributes, which can be useful in some situations. 
+The difference between `build()` and `attributesFor()` is that the former will return an instance of the given model type (such as `Post`). The latter will simply return an array of the generated attributes, which can be useful in some situations. 
 
 ### Build and persist a song entity.
 
@@ -121,7 +121,7 @@ $album = Factory::create('Album');
 
 #### Faker
 
-You probably won't want to hardcode strings for your various factories. It would be better to use random data. TestDummy pulls in the excellent [Faker](https://github.com/fzaninotto/Faker) library to assist you.
+You probably won't want to hardcode strings for your various factories. It would be easier and faster to use random data. TestDummy pulls in the excellent [Faker](https://github.com/fzaninotto/Faker) library to assist with this.
 
 In fact, any files in your `tests/factories/` directory will automatically have access to a `$faker` object that you may use. Here's an example:
 
@@ -178,7 +178,7 @@ $song = Factory::create('App\Song');
 
 #### Custom Factories
 
-So far, you've learned how to generate data, using the name of the class, like `App\User`. However, sometimes, you'll want to define multiple types of users, for the purposes of testing.
+So far, you've learned how to generate data, using the name of the class, like `App\User`. However, sometimes, you'll want to define multiple types of users for the purposes of testing.
 
 While it's true that you can use overrides, like this:
 
@@ -232,7 +232,7 @@ Of course, just be sure to return an array from this closure. If you don't, an e
 
 ### Step 3: Setup
 
-When testing against a database, it's recommended that each test works with the exact same database environment and structure. That way, you can protect yourself against false positives. A SQLite database (maybe even one in memory) is a good choice in these cases.
+When testing against a database, it's recommended that each test works with the exact same database environment and structure. That way, you can protect yourself against false positives. An SQLite database (maybe even one in memory) is a good choice in these cases.
 
 ```php
 public function setUp()
