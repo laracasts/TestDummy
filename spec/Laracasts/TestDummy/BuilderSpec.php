@@ -19,6 +19,14 @@ class BuilderSpec extends ObjectBehavior {
         $this->beConstructedWith($builderRepository, $factories);
     }
 
+    function it_gets_attributes_for_a_model()
+    {
+        $attributes = $this->attributesFor('Album', ['artist' => 'AC/DC']);
+
+        $attributes['name']->shouldBeString();
+        $attributes['artist']->shouldBe('AC/DC');
+    }
+
     function it_builds_entities(BuildableRepositoryInterface $builderRepository)
     {
         $builderRepository->build('Album', Argument::type('array'))->willReturn('foo');
@@ -34,7 +42,6 @@ class BuilderSpec extends ObjectBehavior {
 
         $this->build('Album', $overrides)->shouldReturn($overrides);
     }
-
 
     function it_can_persist_an_entity(BuildableRepositoryInterface $builderRepository)
     {
