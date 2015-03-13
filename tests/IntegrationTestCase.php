@@ -53,19 +53,3 @@ abstract class IntegrationTestCase extends PHPUnit_Framework_TestCase
         });
     }
 }
-
-class User extends Illuminate\Database\Eloquent\Model
-{
-    public function role()
-    {
-        return $this->belongsTo('Role');
-    }
-}
-
-class Role extends Illuminate\Database\Eloquent\Model
-{
-    public function users()
-    {
-        return $this->hasMany('User');
-    }
-}

@@ -126,11 +126,29 @@ class Builder
      */
     public function build($name, $attributes = [])
     {
+        $attributes = $this->filterRelationshipAttributes($attributes);
         $data = $this->mergeFixtureWithOverrides($name, $attributes);
 
         // We'll pass off the process of creating the entity.
         // That way, folks can use different persistence layers.
         return $this->database->build($this->getFixture($name)->name, $data);
+    }
+
+    protected function filterRelationshipAttributes($attributes)
+    {
+        $keysToKeep = array_filter(array_keys($attributes), function ($attributeName) {
+            return strpos($attributeName, '.') === false;
+        });
+
+        $filteredAttributes = [];
+
+        foreach ($attributes as $key => $value) {
+            if (in_array($key, $keysToKeep)) {
+                $filteredAttributes[$key] = $value;
+            }
+        }
+
+        return $filteredAttributes;
     }
 
     /**
@@ -213,13 +231,34 @@ class Builder
         // are, then we'll need to create those records as well.
         foreach ($this->database->getAttributes($entity) as $columnName => $value) {
             if ($relationship = $this->hasRelationshipAttribute($value)) {
-                $entity[$columnName] = $this->fetchRelationship($relationship);
+                $relationshipAttributes = $this->fetchAttributesForRelationship($attributes, $relationship);
+                $entity[$columnName] = $this->fetchRelationship($relationship, $relationshipAttributes);
             }
         }
 
         $this->database->save($entity);
 
         return $entity;
+    }
+
+    protected function fetchAttributesForRelationship($attributes, $relationship)
+    {
+        $relationshipPrefix = $relationship . '.';
+
+        $keysToKeep = array_filter(array_keys($attributes), function ($attributeName) use ($relationshipPrefix) {
+            return strpos($attributeName, $relationshipPrefix) === 0;
+        });
+
+        $relationshipAttributes = [];
+
+        foreach ($attributes as $key => $value) {
+            if (in_array($key, $keysToKeep)) {
+                $attributeName = substr_replace($key, '', 0, strlen($relationshipPrefix));
+                $relationshipAttributes[$attributeName] = $value;
+            }
+        }
+
+        return $relationshipAttributes;
     }
 
     /**
@@ -243,13 +282,13 @@ class Builder
      * @param  string $relationshipType
      * @return integer
      */
-    protected function fetchRelationship($relationshipType)
+    protected function fetchRelationship($relationshipType, $attributes = [])
     {
         if ($this->isRelationshipAlreadyCreated($relationshipType)) {
             return $this->relationshipIds[$relationshipType];
         }
 
-        return $this->relationshipIds[$relationshipType] = $this->persist($relationshipType)->getKey();
+        return $this->relationshipIds[$relationshipType] = $this->persist($relationshipType, $attributes)->getKey();
     }
 
     /**

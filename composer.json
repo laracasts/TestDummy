@@ -25,7 +25,8 @@
     },
     "autoload-dev": {
         "classmap": [
-            "tests/IntegrationTestCase.php"
+            "tests/IntegrationTestCase.php",
+            "tests/models"
         ]
     },
     "minimum-stability": "dev"
