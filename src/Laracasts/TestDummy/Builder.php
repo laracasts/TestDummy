@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Collection;
 
+function ddd() {
+    call_user_func_array('var_dump', func_get_args());
+    exit;
+}
+
 class Builder
 {
 
@@ -207,14 +212,13 @@ class Builder
     protected function persist($name, array $attributes = [])
     {
         $entity = $this->build($name, $attributes);
-        $databaseAttributes = $this->database->getAttributes($entity);
 
         // We'll filter through all of the columns, and check
         // to see if there are any defined relationships. If there
         // are, then we'll need to create those records as well.
-        foreach ($databaseAttributes as $columnName => $value) {
+        foreach ($this->database->getAttributes($entity) as $columnName => $value) {
             if ($relationship = $this->hasRelationshipAttribute($value)) {
-                $entity[$columnName] = $this->fetchRelationship($relationship, $attributes);
+                $entity[$columnName] = $this->fetchRelationship($relationship);
             }
         }
 
@@ -244,13 +248,13 @@ class Builder
      * @param  string $relationshipType
      * @return integer
      */
-    protected function fetchRelationship($relationshipType, $attributes)
+    protected function fetchRelationship($relationshipType)
     {
         if ($this->isRelationshipAlreadyCreated($relationshipType)) {
             return $this->relationshipIds[$relationshipType];
         }
 
-        return $this->relationshipIds[$relationshipType] = $this->persist($relationshipType, $attributes)->getKey();
+        return $this->relationshipIds[$relationshipType] = $this->persist($relationshipType)->getKey();
     }
 
     /**

@@ -9,4 +9,4 @@ before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
 
-script: vendor/bin/phpspec run
+script: vendor/bin/phpspec run && phpunit
