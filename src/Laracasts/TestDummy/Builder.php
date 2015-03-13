@@ -2,11 +2,6 @@
 
 use Illuminate\Support\Collection;
 
-function ddd() {
-    call_user_func_array('var_dump', func_get_args());
-    exit;
-}
-
 class Builder
 {
 
