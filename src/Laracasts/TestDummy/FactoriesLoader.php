@@ -9,7 +9,7 @@ class FactoriesLoader
      * Load the factories.
      *
      * @param  string $basePath
-     * @return void
+     * @return array
      */
     public function load($basePath)
     {
