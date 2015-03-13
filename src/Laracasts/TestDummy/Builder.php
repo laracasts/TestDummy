@@ -238,7 +238,9 @@ class Builder
             return $this->relationIds[$relation];
         }
 
-        return $this->relationIds[$relation] = $this->persist($relation, $attributes)->getKey();
+        $relationKey = $this->persist($relation, $attributes)->getKey();
+
+        return $this->relationIds[$relation] = $relationKey;
     }
 
     /**
