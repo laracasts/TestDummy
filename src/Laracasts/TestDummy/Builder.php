@@ -155,7 +155,7 @@ class Builder
         $factory = $this->getFixture($name)->attributes;
         $factory = $this->triggerFakerOnAttributes($factory);
 
-        return array_merge($factory, $attributes);
+        return array_intersect_key($attributes, $factory) + $factory;
     }
 
     /**
