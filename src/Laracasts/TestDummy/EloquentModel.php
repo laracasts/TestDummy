@@ -4,7 +4,7 @@ namespace Laracasts\TestDummy;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class EloquentDatabaseProvider implements IsPersistable
+class EloquentModel implements IsPersistable
 {
 
     /**

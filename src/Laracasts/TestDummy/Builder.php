@@ -36,24 +36,15 @@ class Builder
     private $model;
 
     /**
-     * The faker generator.
-     *
-     * @var mixed
-     */
-    private $generator;
-
-    /**
      * Create a new Builder instance.
      *
      * @param IsPersistable  $model
      * @param array          $fixtures
-     * @param \Faker\Factory $generator
      */
-    public function __construct(IsPersistable $model, array $fixtures, $generator)
+    public function __construct(IsPersistable $model, array $fixtures)
     {
         $this->model = $model;
         $this->fixtures = $fixtures;
-        $this->generator = $generator;
     }
 
     /**
@@ -162,15 +153,6 @@ class Builder
     protected function mergeFixtureWithOverrides($name, array $attributes)
     {
         $factory = $this->getFixture($name)->attributes;
-
-        if (is_callable($factory)) {
-            $factory = $factory($this->generator, $attributes);
-
-            if ( ! is_array($factory)) {
-                throw new TestDummyException("Factory [$name] closure must return an array of attributes.");
-            }
-        }
-
         $factory = $this->triggerFakerOnAttributes($factory);
 
         return array_merge($factory, $attributes);
@@ -196,6 +178,7 @@ class Builder
 
             // It's possible that the called Faker method returned an array.
             // If that is the case, we'll implode it for the user.
+
             return is_array($attribute) ? implode(' ', $attribute) : $attribute;
         }, $attributes);
     }

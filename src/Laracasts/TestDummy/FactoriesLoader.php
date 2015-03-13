@@ -2,6 +2,8 @@
 
 namespace Laracasts\TestDummy;
 
+use Faker\Factory as Faker;
+
 class FactoriesLoader
 {
 
@@ -26,7 +28,7 @@ class FactoriesLoader
             include($file);
         }
 
-        return $designer->definitions();
+        return $this->normalizeDefinitions($designer);
     }
 
     /**
@@ -43,6 +45,37 @@ class FactoriesLoader
                 "The path provided for the factories directory, {$basePath}, does not exist."
             );
         }
+    }
+
+    /**
+     * Normalize factory calls, so that the user may provide either
+     * an array or closure to define the makeup of the entity.
+     *
+     * @param  Designer $designer
+     * @return array
+     */
+    private function normalizeDefinitions($designer)
+    {
+        $faker = Faker::create();
+
+        return array_map(function ($definition) use ($faker) {
+
+            // If the user provided a closure, then we need to trigger
+            // it, and fetch the returned array.
+
+            if (is_callable($definition->attributes)) {
+                $definition->attributes = call_user_func($definition->attributes, $faker);
+
+                // And if the user didn't return an array from that closure, well
+                // we don't exactly know how to proceed. So we'll abort.
+
+                if ( ! is_array($definition->attributes)) {
+                    throw new TestDummyException("Factory closure must return an array of attributes.");
+                }
+            }
+
+            return $definition;
+        }, $designer->definitions());
     }
 
 }

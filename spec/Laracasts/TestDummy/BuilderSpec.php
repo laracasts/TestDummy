@@ -1,24 +1,20 @@
 <?php
 
 namespace spec\Laracasts\TestDummy;
-use Faker\Factory as Faker;
 
 use Laracasts\TestDummy\FixturesFinder;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Laracasts\TestDummy\IsPersistable;
-use stdClass;
 use Laracasts\TestDummy\Factory;
-use Illuminate\Support\Collection;
 
 class BuilderSpec extends ObjectBehavior {
 
-    function let(IsPersistable $builderRepository)
+    function let(IsPersistable $model)
     {
         $factories = (new Factory(__DIR__.'/helpers'))->factories();
-        $faker = Faker::create();
 
-        $this->beConstructedWith($builderRepository, $factories, $faker);
+        $this->beConstructedWith($model, $factories);
     }
 
     function it_gets_attributes_for_a_model()
@@ -29,56 +25,56 @@ class BuilderSpec extends ObjectBehavior {
         $attributes['artist']->shouldBe('AC/DC');
     }
 
-    function it_builds_entities(IsPersistable $builderRepository)
+    function it_builds_entities(IsPersistable $model)
     {
-        $builderRepository->build('Album', Argument::type('array'))->willReturn('foo');
+        $model->build('Album', Argument::type('array'))->willReturn('foo');
 
         $this->build('Album')->shouldReturn('foo');
     }
 
-    function it_can_override_defaults_from_factory(IsPersistable $builderRepository)
+    function it_can_override_defaults_from_factory(IsPersistable $model)
     {
         $overrides = ['artist' => 'Captain Geech and the Shrimp-Shack Shooters', 'name' => 'Album Name'];
 
-        $builderRepository->build('Album', $overrides)->willReturn($overrides);
+        $model->build('Album', $overrides)->willReturn($overrides);
 
         $this->build('Album', $overrides)->shouldReturn($overrides);
     }
 
-    function it_can_handle_attributes_returned_from_closure(IsPersistable $builderRepository)
+    function it_can_handle_attributes_returned_from_closure(IsPersistable $model)
     {
-        $builderRepository->build('Artist', Argument::type('array'))->willReturn('foo');
+        $model->build('Artist', Argument::type('array'))->willReturn('foo');
 
         $this->build('Artist')->shouldReturn('foo');
     }
 
-    function it_can_override_defaults_in_a_closure(IsPersistable $builderRepository)
+    function it_can_override_defaults_in_a_closure(IsPersistable $model)
     {
         $overrides = ['name' => 'The Boogaloos'];
 
-        $builderRepository->build('Artist', $overrides)->willReturn($overrides);
+        $model->build('Artist', $overrides)->willReturn($overrides);
 
         $this->build('Artist', $overrides)->shouldReturn($overrides);
     }
 
-    function it_can_persist_an_entity(IsPersistable $builderRepository)
+    function it_can_persist_an_entity(IsPersistable $model)
     {
         $albumStub = new AlbumStub;
 
-        $builderRepository->getAttributes(Argument::any())->willReturn([]);
-        $builderRepository->build('Album', Argument::type('array'))->willReturn($albumStub);
-        $builderRepository->save($albumStub)->shouldBeCalled();
+        $model->getAttributes(Argument::any())->willReturn([]);
+        $model->build('Album', Argument::type('array'))->willReturn($albumStub);
+        $model->save($albumStub)->shouldBeCalled();
 
         $this->create('Album')->shouldReturn($albumStub);
     }
 
-    function it_can_create_multiple_entities_at_once(IsPersistable $builderRepository)
+    function it_can_create_multiple_entities_at_once(IsPersistable $model)
     {
         $stub = new AlbumStub;
 
-        $builderRepository->getAttributes(Argument::any())->willReturn([]);
-        $builderRepository->build('Album', Argument::type('array'))->shouldBeCalledTimes(3)->willReturn($stub);
-        $builderRepository->save($stub)->shouldBeCalledTimes(3);
+        $model->getAttributes(Argument::any())->willReturn([]);
+        $model->build('Album', Argument::type('array'))->shouldBeCalledTimes(3)->willReturn($stub);
+        $model->save($stub)->shouldBeCalledTimes(3);
 
         $collection = $this->setTimes(3)->create('Album');
 

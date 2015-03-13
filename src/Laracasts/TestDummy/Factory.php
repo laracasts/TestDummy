@@ -2,7 +2,7 @@
 
 namespace Laracasts\TestDummy;
 
-use Laracasts\TestDummy\IsPersistable as BuildableRepository;
+use Laracasts\TestDummy\IsPersistable;
 use Faker\Factory as Faker;
 
 class Factory
@@ -23,35 +23,26 @@ class Factory
     private static $factories;
 
     /**
-     * The persistence layer.
+     * The persistable instance.
      *
      * @var IsPersistable
      */
     public static $databaseProvider;
 
     /**
-     * The generator.
-     *
-     * @var Faker
-     */
-    public static $generator;
-
-    /**
      * Create a new factory instance.
      *
-     * @param string              $factoriesPath
-     * @param BuildableRepository $databaseProvider
-     * @param Faker               $generator
+     * @param string        $factoriesPath
+     * @param IsPersistable $databaseProvider
      */
-    public function __construct($factoriesPath = null, BuildableRepository $databaseProvider = null, $generator = null)
+    public function __construct($factoriesPath = null, IsPersistable $databaseProvider = null)
     {
         $this->loadFactories($factoriesPath);
         $this->setDatabaseProvider($databaseProvider);
-        $this->setGenerator($generator);
     }
 
     /**
-     * Get the user registered factories.
+     * Get the user-registered factories.
      *
      * @return array
      */
@@ -85,8 +76,8 @@ class Factory
     /**
      * Fill an entity with test data, without saving it.
      *
-     * @param string $name
-     * @param array  $attributes
+     * @param  string $name
+     * @param  array  $attributes
      * @return array
      */
     public static function build($name, array $attributes = [])
@@ -97,8 +88,8 @@ class Factory
     /**
      * Fill and save an entity.
      *
-     * @param string $name
-     * @param array  $attributes
+     * @param  string $name
+     * @param  array  $attributes
      * @return mixed
      */
     public static function create($name, array $attributes = [])
@@ -109,7 +100,7 @@ class Factory
     /**
      * Set the number of times to create a record.
      *
-     * @param $times
+     * @param  integer $times
      * @return $this
      */
     public static function times($times)
@@ -124,7 +115,7 @@ class Factory
      */
     private function getBuilder()
     {
-        return new Builder($this->databaseProvider(), $this->factories(), $this->generator());
+        return new Builder($this->databaseProvider(), $this->factories());
     }
 
     /**
@@ -145,36 +136,13 @@ class Factory
     /**
      * Set the database provider for the data generation.
      *
-     * @param  BuildableRepository $provider
+     * @param  IsPersistable $provider
      * @return void
      */
     private function setDatabaseProvider($provider)
     {
         if ( ! static::$databaseProvider) {
-            static::$databaseProvider = $provider ?: new EloquentDatabaseProvider;
-        }
-    }
-
-    /**
-     * Get the generator.
-     *
-     * @return mixed
-     */
-    public function generator()
-    {
-        return static::$generator;
-    }
-
-    /**
-     * Set the generator for random data generation.
-     *
-     * @param  Faker $generator
-     * @return void
-     */
-    private function setGenerator($generator)
-    {
-        if ( ! static::$generator) {
-            static::$generator = $generator ?: Faker::create();
+            static::$databaseProvider = $provider ?: new EloquentModel;
         }
     }
 
