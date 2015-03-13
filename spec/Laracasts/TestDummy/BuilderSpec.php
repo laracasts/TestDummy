@@ -6,14 +6,14 @@ use Faker\Factory as Faker;
 use Laracasts\TestDummy\FixturesFinder;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Laracasts\TestDummy\BuildableRepositoryInterface;
+use Laracasts\TestDummy\IsPersistable;
 use stdClass;
 use Laracasts\TestDummy\Factory;
 use Illuminate\Support\Collection;
 
 class BuilderSpec extends ObjectBehavior {
 
-    function let(BuildableRepositoryInterface $builderRepository)
+    function let(IsPersistable $builderRepository)
     {
         $factories = (new Factory(__DIR__.'/helpers'))->factories();
         $faker = Faker::create();
@@ -29,14 +29,14 @@ class BuilderSpec extends ObjectBehavior {
         $attributes['artist']->shouldBe('AC/DC');
     }
 
-    function it_builds_entities(BuildableRepositoryInterface $builderRepository)
+    function it_builds_entities(IsPersistable $builderRepository)
     {
         $builderRepository->build('Album', Argument::type('array'))->willReturn('foo');
 
         $this->build('Album')->shouldReturn('foo');
     }
 
-    function it_can_override_defaults_from_factory(BuildableRepositoryInterface $builderRepository)
+    function it_can_override_defaults_from_factory(IsPersistable $builderRepository)
     {
         $overrides = ['artist' => 'Captain Geech and the Shrimp-Shack Shooters', 'name' => 'Album Name'];
 
@@ -45,14 +45,14 @@ class BuilderSpec extends ObjectBehavior {
         $this->build('Album', $overrides)->shouldReturn($overrides);
     }
 
-    function it_can_handle_attributes_returned_from_closure(BuildableRepositoryInterface $builderRepository)
+    function it_can_handle_attributes_returned_from_closure(IsPersistable $builderRepository)
     {
         $builderRepository->build('Artist', Argument::type('array'))->willReturn('foo');
 
         $this->build('Artist')->shouldReturn('foo');
     }
 
-    function it_can_override_defaults_in_a_closure(BuildableRepositoryInterface $builderRepository)
+    function it_can_override_defaults_in_a_closure(IsPersistable $builderRepository)
     {
         $overrides = ['name' => 'The Boogaloos'];
 
@@ -61,7 +61,7 @@ class BuilderSpec extends ObjectBehavior {
         $this->build('Artist', $overrides)->shouldReturn($overrides);
     }
 
-    function it_can_persist_an_entity(BuildableRepositoryInterface $builderRepository)
+    function it_can_persist_an_entity(IsPersistable $builderRepository)
     {
         $albumStub = new AlbumStub;
 
@@ -72,7 +72,7 @@ class BuilderSpec extends ObjectBehavior {
         $this->create('Album')->shouldReturn($albumStub);
     }
 
-    function it_can_create_multiple_entities_at_once(BuildableRepositoryInterface $builderRepository)
+    function it_can_create_multiple_entities_at_once(IsPersistable $builderRepository)
     {
         $stub = new AlbumStub;
 

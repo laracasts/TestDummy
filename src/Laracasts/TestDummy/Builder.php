@@ -24,14 +24,14 @@ class Builder
      *
      * @var array
      */
-    protected $relationshipIds = [];
+    protected $relationIds = [];
 
     /**
-     * The buildable repository layer.
+     * The persistable model instance.
      *
-     * @var BuildableRepositoryInterface
+     * @var IsPersistable
      */
-    private $database;
+    private $model;
 
     /**
      * The faker generator.
@@ -43,13 +43,13 @@ class Builder
     /**
      * Create a new Builder instance.
      *
-     * @param BuildableRepositoryInterface $database
-     * @param array                        $fixtures
-     * @param \Faker\Factory               $generator
+     * @param IsPersistable  $model
+     * @param array          $fixtures
+     * @param \Faker\Factory $generator
      */
-    public function __construct(BuildableRepositoryInterface $database, array $fixtures, $generator)
+    public function __construct(IsPersistable $model, array $fixtures, $generator)
     {
-        $this->database = $database;
+        $this->model = $model;
         $this->fixtures = $fixtures;
         $this->generator = $generator;
     }
@@ -130,7 +130,7 @@ class Builder
 
         // We'll pass off the process of creating the entity.
         // That way, folks can use different persistence layers.
-        return $this->database->build($this->getFixture($name)->name, $data);
+        return $this->model->build($this->getFixture($name)->name, $data);
     }
 
     /**
@@ -142,7 +142,7 @@ class Builder
      */
     public function create($name, array $attributes = [])
     {
-        $entities = array_map(function () use ($name, $attributes) {
+        $entities = array_map(function() use ($name, $attributes) {
             return $this->persist($name, $attributes);
         }, range(1, $this->getTimes()));
 
@@ -188,6 +188,7 @@ class Builder
 
         // So we can now filter through our attributes and call these
         // closures, which will generate the proper Faker values.
+
         return array_map(function ($attribute) {
             $attribute = is_callable($attribute) ? $attribute() : $attribute;
 
@@ -207,18 +208,19 @@ class Builder
     protected function persist($name, array $attributes = [])
     {
         $entity = $this->build($name, $attributes);
-        $databaseAttributes = $this->database->getAttributes($entity);
+        $databaseAttributes = $this->model->getAttributes($entity);
 
         // We'll filter through all of the columns, and check
         // to see if there are any defined relationships. If there
         // are, then we'll need to create those records as well.
+
         foreach ($databaseAttributes as $columnName => $value) {
             if ($relationship = $this->hasRelationshipAttribute($value)) {
-                $entity[$columnName] = $this->fetchRelationship($relationship, $attributes);
+                $entity[$columnName] = $this->fetchRelationId($relationship, $attributes);
             }
         }
 
-        $this->database->save($entity);
+        $this->model->save($entity);
 
         return $entity;
     }
@@ -241,16 +243,17 @@ class Builder
     /**
      * Get the ID for the relationship.
      *
-     * @param  string $relationshipType
-     * @return integer
+     * @param  string $relation
+     * @param  array  $attributes
+     * @return int
      */
-    protected function fetchRelationship($relationshipType, $attributes)
+    protected function fetchRelationId($relation, $attributes)
     {
-        if ($this->isRelationshipAlreadyCreated($relationshipType)) {
-            return $this->relationshipIds[$relationshipType];
+        if ($this->isRelationAlreadyCreated($relation)) {
+            return $this->relationIds[$relation];
         }
 
-        return $this->relationshipIds[$relationshipType] = $this->persist($relationshipType, $attributes)->getKey();
+        return $this->relationIds[$relation] = $this->persist($relation, $attributes)->getKey();
     }
 
     /**
@@ -259,9 +262,9 @@ class Builder
      * @param  string $relationshipType
      * @return bool
      */
-    protected function isRelationshipAlreadyCreated($relationshipType)
+    protected function isRelationAlreadyCreated($relationshipType)
     {
-        return isset($this->relationshipIds[$relationshipType]);
+        return isset($this->relationIds[$relationshipType]);
     }
 
 }

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class EloquentDatabaseProvider implements BuildableRepositoryInterface
+class EloquentDatabaseProvider implements IsPersistable
 {
 
     /**

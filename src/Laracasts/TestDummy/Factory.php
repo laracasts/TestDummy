@@ -1,6 +1,6 @@
 <?php namespace Laracasts\TestDummy;
 
-use Laracasts\TestDummy\BuildableRepositoryInterface as BuildableRepository;
+use Laracasts\TestDummy\IsPersistable as BuildableRepository;
 use Faker\Factory as Faker;
 
 class Factory
@@ -23,7 +23,7 @@ class Factory
     /**
      * The persistence layer.
      *
-     * @var BuildableRepositoryInterface
+     * @var IsPersistable
      */
     public static $databaseProvider;
 
@@ -61,7 +61,7 @@ class Factory
     /**
      * Get the database provider.
      *
-     * @return BuildableRepositoryInterface
+     * @return IsPersistable
      */
     public function databaseProvider()
     {

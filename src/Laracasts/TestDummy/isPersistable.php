@@ -1,6 +1,6 @@
 <?php namespace Laracasts\TestDummy;
 
-interface BuildableRepositoryInterface
+interface IsPersistable
 {
 
     /**
