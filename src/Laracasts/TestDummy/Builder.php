@@ -193,14 +193,14 @@ class Builder
     protected function persist($name, array $attributes = [])
     {
         $entity = $this->build($name, $attributes);
-        $databaseAttributes = $this->model->getAttributes($entity);
+        $modelAttributes = $this->model->getAttributes($entity);
 
         // We'll filter through all of the columns, and check
         // to see if there are any defined relationships. If there
         // are, then we'll need to create those records as well.
 
-        foreach ($databaseAttributes as $columnName => $value) {
-            if ($relationship = $this->hasRelationshipAttribute($value)) {
+        foreach ($modelAttributes as $columnName => $value) {
+            if ($relationship = $this->hasRelationAttribute($value)) {
                 $entity[$columnName] = $this->fetchRelationId($relationship, $attributes);
             }
         }
@@ -216,7 +216,7 @@ class Builder
      * @param  string $value
      * @return mixed
      */
-    protected function hasRelationshipAttribute($value)
+    protected function hasRelationAttribute($value)
     {
         if (is_string($value) && preg_match('/^factory:(.+)$/i', $value, $matches)) {
             return $matches[1];
