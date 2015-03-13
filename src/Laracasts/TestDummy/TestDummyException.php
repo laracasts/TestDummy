@@ -1,6 +1,5 @@
-<?php namespace Laracasts\TestDummy;
+<?php
 
-class TestDummyException extends \Exception
-{
+namespace Laracasts\TestDummy;
 
-}
+class TestDummyException extends \Exception {}

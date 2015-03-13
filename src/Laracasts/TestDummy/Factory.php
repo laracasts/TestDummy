@@ -1,4 +1,6 @@
-<?php namespace Laracasts\TestDummy;
+<?php
+
+namespace Laracasts\TestDummy;
 
 use Laracasts\TestDummy\IsPersistable as BuildableRepository;
 use Faker\Factory as Faker;

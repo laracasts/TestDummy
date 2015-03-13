@@ -1,4 +1,6 @@
-<?php namespace Laracasts\TestDummy;
+<?php
+
+namespace Laracasts\TestDummy;
 
 
 class Designer
