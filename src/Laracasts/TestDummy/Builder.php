@@ -125,7 +125,6 @@ class Builder
     protected function mergeFixtureWithOverrides($name, array $attributes)
     {
         $factory = $this->getFixture($name)->attributes;
-        $factory = $this->triggerFakerOnAttributes($factory);
 
         return array_merge($factory, $attributes);
     }
@@ -156,31 +155,6 @@ class Builder
         throw new TestDummyException(
             'Could not locate a factory with the name: ' . $name
         );
-    }
-
-    /**
-     * Apply Faker dummy values to the attributes.
-     *
-     * @param  array $attributes
-     * @return array
-     */
-    protected function triggerFakerOnAttributes(array $attributes)
-    {
-        // To ensure that we don't use the same Faker value for every
-        // single factory of the same name, all Faker properties are
-        // wrapped in closures.
-
-        // So we can now filter through our attributes and call these
-        // closures, which will generate the proper Faker values.
-
-        return array_map(function ($attribute) {
-            $attribute = is_callable($attribute) ? $attribute() : $attribute;
-
-            // It's possible that the called Faker method returned an array.
-            // If that is the case, we'll implode it for the user.
-
-            return is_array($attribute) ? implode(' ', $attribute) : $attribute;
-        }, $attributes);
     }
 
     /**
