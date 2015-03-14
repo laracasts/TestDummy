@@ -107,11 +107,15 @@ class Builder
      */
     public function create($name, array $attributes = [])
     {
-        $entities = array_map(function() use ($name, $attributes) {
-            return $this->persist($name, $attributes);
-        }, range(1, $this->getTimes()));
+        for ($i = 0; $i < $this->getTimes(); $i++) {
+            $entities[] = $this->persist($name, $attributes);
+        }
 
-        return count($entities) > 1 ? new Collection($entities) : $entities[0];
+        if (count($entities) > 1) {
+            return Collection::make($entities);
+        }
+
+        return $entities[0];
     }
 
     /**
