@@ -71,34 +71,6 @@ class Builder
     }
 
     /**
-     * Get a single fixture.
-     *
-     * @param  string $name
-     * @throws TestDummyException
-     * @return mixed
-     */
-    public function getFixture($name)
-    {
-        // We'll first check to see if they gave us a short name.
-        foreach ($this->fixtures as $fixture) {
-            if ($fixture->shortName == $name) {
-                return $fixture;
-            }
-        }
-
-        // If not, we'll do a second sweep, and look for the class name.
-        foreach ($this->fixtures as $fixture) {
-            if ($fixture->name == $name) {
-                return $fixture;
-            }
-        }
-
-        throw new TestDummyException(
-            'Could not locate a factory with the name: ' . $name
-        );
-    }
-
-    /**
      * Build an array of dummy attributes for an entity.
      *
      * @param  string $name
@@ -156,6 +128,34 @@ class Builder
         $factory = $this->triggerFakerOnAttributes($factory);
 
         return array_merge($factory, $attributes);
+    }
+
+    /**
+     * Get a single fixture.
+     *
+     * @param  string $name
+     * @throws TestDummyException
+     * @return mixed
+     */
+    protected function getFixture($name)
+    {
+        // We'll first check to see if they gave us a short name.
+        foreach ($this->fixtures as $fixture) {
+            if ($fixture->shortName == $name) {
+                return $fixture;
+            }
+        }
+
+        // If not, we'll do a second sweep, and look for the class name.
+        foreach ($this->fixtures as $fixture) {
+            if ($fixture->name == $name) {
+                return $fixture;
+            }
+        }
+
+        throw new TestDummyException(
+            'Could not locate a factory with the name: ' . $name
+        );
     }
 
     /**
