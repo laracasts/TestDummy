@@ -74,42 +74,43 @@ class Builder
      * Build an array of dummy attributes for an entity.
      *
      * @param  string $name
-     * @param  array  $attributes
+     * @param  array  $overrides
      * @return array
      */
-    public function attributesFor($name, $attributes = [])
+    public function attributesFor($name, $overrides = [])
     {
-        return $this->mergeFixtureWithOverrides($name, $attributes);
+        return $this->getAttributes($name, $overrides);
     }
 
     /**
      * Build up an entity and populate it with dummy data.
      *
      * @param  string $name
-     * @param  array  $attributes
+     * @param  array  $overrides
      * @return array
      */
-    public function build($name, $attributes = [])
+    public function build($name, $overrides = [])
     {
-        $factory = $this->mergeFixtureWithOverrides($name, $attributes);
+        $attributes = $this->getAttributes($name, $overrides);
+        $model = $this->getFixture($name)->name;
 
         // We'll pass off the process of creating the entity.
         // That way, folks can use different persistence layers.
 
-        return $this->model->build($this->getFixture($name)->name, $factory);
+        return $this->model->build($model, $attributes);
     }
 
     /**
      * Build and persist a named entity.
      *
      * @param  string $name
-     * @param  array  $attributes
+     * @param  array  $overrides
      * @return mixed
      */
-    public function create($name, array $attributes = [])
+    public function create($name, array $overrides = [])
     {
         for ($i = 0; $i < $this->getTimes(); $i++) {
-            $entities[] = $this->persist($name, $attributes);
+            $entities[] = $this->persist($name, $overrides);
         }
 
         if (count($entities) > 1) {
@@ -131,7 +132,6 @@ class Builder
         $entity = $this->build($name, $attributes);
 
         $this->assignRelationships($entity);
-
         $this->model->save($entity);
 
         return $entity;
@@ -145,7 +145,7 @@ class Builder
      * @return array
      * @throws TestDummyException
      */
-    protected function mergeFixtureWithOverrides($name, array $attributes)
+    protected function getAttributes($name, array $attributes)
     {
         $factory = $this->triggerFakerOnAttributes(
             $this->getFixture($name)->attributes
@@ -217,9 +217,9 @@ class Builder
         // to see if there are any defined relationships. If there
         // are, then we'll need to create those records as well.
 
-        foreach ($attributes as $column => $value) {
-            if ($relationship = $this->hasRelationAttribute($value)) {
-                $entity[$column] = $this->fetchRelationId($relationship, $attributes);
+        foreach ($attributes as $column => $attribute) {
+            if ($relation = $this->findRelation($attribute)) {
+                $entity[$column] = $this->fetchRelationId($relation, $attributes);
             }
         }
 
@@ -229,12 +229,12 @@ class Builder
     /**
      * Check if the attribute refers to a relationship.
      *
-     * @param  string $value
-     * @return mixed
+     * @param  string $attribute
+     * @return string|boolean
      */
-    protected function hasRelationAttribute($value)
+    protected function findRelation($attribute)
     {
-        if (is_string($value) && preg_match('/^factory:(.+)$/i', $value, $matches)) {
+        if (is_string($attribute) && preg_match('/^factory:(.+)$/i', $attribute, $matches)) {
             return $matches[1];
         }
 
