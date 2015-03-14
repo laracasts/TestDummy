@@ -138,16 +138,12 @@ class Builder
      */
     protected function getFixture($name)
     {
-        // We'll first check to see if they gave us a short name.
-        foreach ($this->fixtures as $fixture) {
-            if ($fixture->shortName == $name) {
-                return $fixture;
-            }
-        }
+        // The user may provide either a class name
+        // or a short name identifier. So we'll
+        // track it down here.
 
-        // If not, we'll do a second sweep, and look for the class name.
         foreach ($this->fixtures as $fixture) {
-            if ($fixture->name == $name) {
+            if ($fixture->shortName == $name or $fixture->name == $name) {
                 return $fixture;
             }
         }
