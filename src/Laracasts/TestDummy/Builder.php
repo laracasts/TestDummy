@@ -147,8 +147,9 @@ class Builder
      */
     protected function mergeFixtureWithOverrides($name, array $attributes)
     {
-        $factory = $this->getFixture($name)->attributes;
-        $factory = $this->triggerFakerOnAttributes($factory);
+        $factory = $this->triggerFakerOnAttributes(
+            $this->getFixture($name)->attributes
+        );
 
         return array_merge($factory, $attributes);
     }
