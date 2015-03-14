@@ -206,10 +206,10 @@ class Builder
     /**
      * Prepare and assign any applicable relationships.
      *
-     * @param  $entity
+     * @param  mixed $entity
      * @return mixed
      */
-    protected function assignRelationships()
+    protected function assignRelationships($entity)
     {
         $attributes = $this->model->getAttributes($entity);
 
