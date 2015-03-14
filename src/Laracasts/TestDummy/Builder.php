@@ -92,12 +92,12 @@ class Builder
     public function build($name, $overrides = [])
     {
         $attributes = $this->getAttributes($name, $overrides);
-        $model = $this->getFixture($name)->name;
+        $class = $this->getFixture($name)->name;
 
         // We'll pass off the process of creating the entity.
         // That way, folks can use different persistence layers.
 
-        return $this->model->build($model, $attributes);
+        return $this->model->build($class, $attributes);
     }
 
     /**
