@@ -91,11 +91,12 @@ class Builder
      */
     public function build($name, $attributes = [])
     {
-        $data = $this->mergeFixtureWithOverrides($name, $attributes);
+        $factory = $this->mergeFixtureWithOverrides($name, $attributes);
 
         // We'll pass off the process of creating the entity.
         // That way, folks can use different persistence layers.
-        return $this->model->build($this->getFixture($name)->name, $data);
+
+        return $this->model->build($this->getFixture($name)->name, $factory);
     }
 
     /**
