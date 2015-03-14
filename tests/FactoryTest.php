@@ -16,8 +16,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $attributes = TestDummy::build('Foo');
 
-        $this->assertInstanceOf('Foo', $attributes);
-        $this->assertEquals('bar', $attributes->name);
+        assertInstanceOf('Foo', $attributes);
+        assertEquals('bar', $attributes->name);
     }
 
     /** @test */
@@ -25,6 +25,15 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $attributes = TestDummy::build('Foo', ['name' => 'override']);
 
-        $this->assertEquals('override', $attributes->name);
+        assertEquals('override', $attributes->name);
+    }
+
+    /** @test */
+    public function it_gets_an_array_only_of_attributes()
+    {
+        $attributes = TestDummy::attributesFor('Foo', ['name' => 'override']);
+
+        assertInternalType('array', $attributes);
+        assertEquals('override', $attributes['name']);
     }
 }
