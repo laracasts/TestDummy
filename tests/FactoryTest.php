@@ -114,4 +114,13 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         assertInstanceOf('Illuminate\Support\Collection', $posts);
         assertCount(3, $posts);
     }
+
+    /**
+     * @test
+     * @expectedException Laracasts\TestDummy\TestDummyException
+     */
+    public function it_squawks_if_you_try_to_build_an_unknown()
+    {
+        TestDummy::attributesFor('ClassThatDoesNotExist');
+    }
 }
