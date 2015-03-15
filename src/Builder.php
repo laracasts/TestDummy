@@ -131,7 +131,7 @@ class Builder
     {
         $entity = $this->build($name, $attributes);
 
-        $this->assignRelationships($entity, $attributes);
+        $this->assignRelationships($entity);
         $this->model->save($entity);
 
         return $entity;
@@ -207,10 +207,9 @@ class Builder
      * Prepare and assign any applicable relationships.
      *
      * @param  mixed $entity
-     * @param  array $attributes
      * @return mixed
      */
-    protected function assignRelationships($entity, $attributes)
+    protected function assignRelationships($entity)
     {
         $modelAttributes = $this->model->getAttributes($entity);
 
