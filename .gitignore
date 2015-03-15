@@ -2,6 +2,4 @@ tests/coverage
 /vendor
 composer.phar
 composer.lock
-.DS_Store
-.idea
 .tags*
