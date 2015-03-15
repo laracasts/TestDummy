@@ -63,6 +63,14 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_accepts_a_short_name_identifier_instead_of_the_model_class()
+    {
+        $post = TestDummy::build('scheduled_post');
+
+        assertInstanceOf('Post', $post);
+    }
+
+    /** @test */
     public function it_gets_an_array_only_of_attributes()
     {
         $attributes = TestDummy::attributesFor('Post', ['title' => 'override']);
