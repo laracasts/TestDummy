@@ -113,7 +113,7 @@ class Factory
      *
      * @return Builder
      */
-    private function getBuilder()
+    public function getBuilder()
     {
         return new Builder($this->databaseProvider(), $this->factories());
     }
