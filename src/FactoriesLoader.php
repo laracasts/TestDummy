@@ -54,7 +54,7 @@ class FactoriesLoader
      * @param  Designer $designer
      * @return array
      */
-    private function normalizeDefinitions($designer)
+    private function normalizeDefinitions(Designer $designer)
     {
         $faker = Faker::create();
 
