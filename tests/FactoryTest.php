@@ -71,6 +71,15 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function it_allows_a_closure_to_be_used_for_defining_factories()
+    {
+        $foo = TestDummy::build('Foo');
+
+        assertInstanceOf('Foo', $foo);
+        assertInternalType('string', $foo->name);
+    }
+
+    /** @test */
     public function it_gets_an_array_only_of_attributes()
     {
         $attributes = TestDummy::attributesFor('Post', ['title' => 'override']);
