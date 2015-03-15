@@ -88,4 +88,13 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         assertInstanceOf('Comment', $comment);
         assertInstanceOf('Post', $comment->post);
     }
+
+    /** @test */
+    public function it_can_build_and_persist_multiple_times()
+    {
+        $posts = TestDummy::times(3)->create('Post');
+
+        assertInstanceOf('Illuminate\Support\Collection', $posts);
+        assertCount(3, $posts);
+    }
 }
