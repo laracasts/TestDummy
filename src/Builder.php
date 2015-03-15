@@ -130,7 +130,7 @@ class Builder
     protected function persist($name, array $attributes = [])
     {
         $entity = $this->build($name, $attributes);
-        
+
         $this->assignRelationships($entity, $attributes);
         $this->model->save($entity);
 
@@ -202,7 +202,7 @@ class Builder
             return is_array($attribute) ? implode(' ', $attribute) : $attribute;
         }, $attributes);
     }
-   
+
     /**
      * Prepare and assign any applicable relationships.
      *
@@ -217,10 +217,10 @@ class Builder
         // We'll filter through all of the columns, and check
         // to see if there are any defined relationships. If there
         // are, then we'll need to create those records as well.
-        // 
+
         foreach ($modelAttributes as $columnName => $value) {
             if ($relationship = $this->findRelation($value)) {
-                $entity[$columnName] = $this->fetchRelationId($relationship, $attributes);
+                $entity[$columnName] = $this->fetchRelationId($relationship);
             }
         }
 
@@ -246,16 +246,15 @@ class Builder
      * Get the ID for the relationship.
      *
      * @param  string $relation
-     * @param  array  $attributes
      * @return int
      */
-    protected function fetchRelationId($relation, $attributes)
+    protected function fetchRelationId($relation)
     {
         if ($this->isRelationAlreadyCreated($relation)) {
             return $this->relationIds[$relation];
         }
 
-        $relationKey = $this->persist($relation, $attributes)->getKey();
+        $relationKey = $this->persist($relation)->getKey();
 
         return $this->relationIds[$relation] = $relationKey;
     }
