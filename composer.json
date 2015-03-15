@@ -17,8 +17,7 @@
     "require-dev": {
         "phpspec/phpspec": "~2.0",
         "illuminate/database": "~4.0|~5.0",
-        "phpunit/phpunit": "~4.7@dev",
-        "codeclimate/php-test-reporter": "0.1.*@dev"
+        "phpunit/phpunit": "~4.7@dev"
     },
     "autoload": {
         "psr-4": {
