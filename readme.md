@@ -312,9 +312,7 @@ Now, TestDummy will look for your registered factories in the `app/tests/factori
 
 #### I want to control how my models are built and saved...
 
-Okay, just create your own implementation of `Laracasts\TestDummy\BuildableRepositoryInterface`. This contract is composed of two methods that you'll need to implement: `build` and `save`.
-
-Use `build` to describe how to populate your class/model with the given attributes. Use `save` to specify how the entity should be saved/persisted to the database.
+Okay, just create your own implementation of `Laracasts\TestDummy\IsPersistable`. This contract is composed of a few methods that you'll need to implement.
 
 Once you have your implementation, before your tests run, add:
 
