@@ -130,8 +130,8 @@ class Builder
     protected function persist($name, array $attributes = [])
     {
         $entity = $this->build($name, $attributes);
-
-        $this->assignRelationships($entity);
+        
+        $this->assignRelationships($entity, $attributes);
         $this->model->save($entity);
 
         return $entity;
@@ -207,19 +207,20 @@ class Builder
      * Prepare and assign any applicable relationships.
      *
      * @param  mixed $entity
+     * @param  array $attributes
      * @return mixed
      */
-    protected function assignRelationships($entity)
+    protected function assignRelationships($entity, $attributes)
     {
-        $attributes = $this->model->getAttributes($entity);
+        $modelAttributes = $this->model->getAttributes($entity);
 
         // We'll filter through all of the columns, and check
         // to see if there are any defined relationships. If there
         // are, then we'll need to create those records as well.
-
-        foreach ($attributes as $column => $attribute) {
-            if ($relation = $this->findRelation($attribute)) {
-                $entity[$column] = $this->fetchRelationId($relation, $attributes);
+        // 
+        foreach ($modelAttributes as $columnName => $value) {
+            if ($relationship = $this->findRelation($value)) {
+                $entity[$columnName] = $this->fetchRelationId($relationship, $attributes);
             }
         }
 
