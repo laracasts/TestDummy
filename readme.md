@@ -1,10 +1,7 @@
-# TestDummy [![Build Status](https://travis-ci.org/laracasts/TestDummy.svg?branch=master)](https://travis-ci.org/laracasts/TestDummy)
+# TestDummy [![Build Status](https://travis-ci.org/laracasts/TestDummy.svg?branch=master)](https://travis-ci.org/laracasts/TestDummy) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/10d5bafd-bc3a-44c3-9449-c0a18c6d2975/mini.png)](https://insight.sensiolabs.com/projects/10d5bafd-bc3a-44c3-9449-c0a18c6d2975)
 
-![image](https://dl.dropboxusercontent.com/u/774859/GitHub-Repos/testdummy/crashtestdummy.jpg)
 
-TestDummy makes the process of preparing factories (dummy data) for your integration tests as easy as possible.
-
-As easy as...
+TestDummy makes the process of preparing factories (dummy data) for your integration tests as easy as possible. As easy as...
 
 ### Build a Post model with dummy attributes.
 
