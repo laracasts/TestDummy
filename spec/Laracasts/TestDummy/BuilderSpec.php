@@ -83,6 +83,11 @@ class BuilderSpec extends ObjectBehavior {
         $collection[2]->shouldEqual($stub);
     }
 
+    function it_throws_an_exception_if_the_fixture_name_is_not_recognized()
+    {
+        $this->shouldThrow('Laracasts\TestDummy\TestDummyException')->duringAttributesFor('Bar');
+    }
+
 }
 
 class AlbumStub {
