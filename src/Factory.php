@@ -3,7 +3,6 @@
 namespace Laracasts\TestDummy;
 
 use Laracasts\TestDummy\IsPersistable;
-use Faker\Factory as Faker;
 
 class Factory
 {
