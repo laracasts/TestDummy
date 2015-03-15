@@ -1,11 +1,11 @@
 <?php
 
-$factory('Post', [
-    'title' => 'Post Title'
-]);
-
 $factory('Post', 'scheduled_post', [
     'title' => 'Scheduled Post Title'
+]);
+
+$factory('Post', [
+    'title' => 'Post Title'
 ]);
 
 $factory('Comment', [
