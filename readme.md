@@ -216,7 +216,7 @@ $adminUser = Factory::create('admin_user');
 Alternatively, you may pass a closure as the second argument to the `$factory` method. This can be useful for situations where you need a bit more control over the values that you assign to each attribute. Here's an example:
 
 ```php
-$factory('App\Artist', function($faker, $overrides) {
+$factory('App\Artist', function($faker) {
     $name = sprintf('Some Band Named %s', $faker->word);
     
     return [
