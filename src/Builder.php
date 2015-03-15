@@ -168,7 +168,7 @@ class Builder
         // track it down here.
 
         foreach ($this->fixtures as $fixture) {
-            if ($fixture->shortName == $name or $fixture->name == $name) {
+            if ($fixture->shortName == $name || $fixture->name == $name) {
                 return $fixture;
             }
         }
