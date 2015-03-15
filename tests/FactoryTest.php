@@ -80,10 +80,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         assertNotNull($post->id);
     }
 
-    /**
-     * @test
-     * @group failing
-     */
+    /** @test */
     public function it_builds_up_relationships_if_specified()
     {
         $comment = TestDummy::create('Comment');
