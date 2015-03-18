@@ -22,13 +22,6 @@ class Builder
     protected $times = 1;
 
     /**
-     * A list of cached relationship ids.
-     *
-     * @var array
-     */
-    protected $relationIds = [];
-
-    /**
      * The persistable model instance.
      *
      * @var IsPersistable
@@ -131,7 +124,7 @@ class Builder
     {
         $entity = $this->build($name, $attributes);
 
-        $this->assignRelationships($entity);
+        $this->assignRelationships($entity, $attributes);
         $this->model->save($entity);
 
         return $entity;
@@ -147,11 +140,37 @@ class Builder
      */
     protected function getAttributes($name, array $attributes)
     {
+        $attributes = $this->filterRelationshipAttributes($attributes);
+
         $factory = $this->triggerFakerOnAttributes(
             $this->getFixture($name)->attributes
         );
 
         return array_merge($factory, $attributes);
+    }
+
+    /**
+     * Remove attributes meant for a relationship
+     * @param  array $attributes
+     * @return array
+     */
+    protected function filterRelationshipAttributes(array $attributes)
+    {
+        return $this->filterArrayKeys($attributes, function ($key) {
+            return ! str_contains($key, '.');
+        });
+    }
+
+    /**
+     * Filter an array using keys instead of values
+     * @param  array  $array
+     * @param  callable $callback
+     * @return array
+     */
+    protected function filterArrayKeys(array $array, $callback)
+    {
+        $matchedKeys = array_filter(array_keys($array), $callback);
+        return array_intersect_key($array, array_flip($matchedKeys));
     }
 
     /**
@@ -212,7 +231,7 @@ class Builder
      * @param  mixed $entity
      * @return mixed
      */
-    protected function assignRelationships($entity)
+    protected function assignRelationships($entity, $attributes)
     {
         $modelAttributes = $this->model->getAttributes($entity);
 
@@ -222,7 +241,7 @@ class Builder
 
         foreach ($modelAttributes as $columnName => $value) {
             if ($relationship = $this->findRelation($value)) {
-                $entity[$columnName] = $this->fetchRelationId($relationship);
+                $entity[$columnName] = $this->fetchRelationId($relationship, $columnName, $attributes);
             }
         }
 
@@ -247,29 +266,38 @@ class Builder
     /**
      * Get the ID for the relationship.
      *
-     * @param  string $relation
+     * @param  string $factoryName
+     * @param  string $relationshipName
+     * @param  string $attributes
      * @return int
      */
-    protected function fetchRelationId($relation)
+    protected function fetchRelationId($factoryName, $relationshipName, array $attributes)
     {
-        if ($this->isRelationAlreadyCreated($relation)) {
-            return $this->relationIds[$relation];
-        }
+        $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
+        $relationKey = $this->persist($factoryName, $attributes)->getKey();
 
-        $relationKey = $this->persist($relation)->getKey();
-
-        return $this->relationIds[$relation] = $relationKey;
+        return $relationKey;
     }
 
     /**
-     * Determine if the provided relationship type has already been persisted.
-     *
-     * @param  string $relationshipType
-     * @return bool
+     * Extract the attributes meant for a particular relationship
+     * @param  string $columnName
+     * @param  array $attributes
+     * @return array
      */
-    protected function isRelationAlreadyCreated($relationshipType)
+    protected function extractRelationshipAttributes($columnName, array $attributes)
     {
-        return isset($this->relationIds[$relationshipType]);
-    }
+        $attributes = $this->filterArrayKeys($attributes, function ($key) use ($columnName) {
+            return starts_with($key, $columnName . '.');
+        });
 
+        $extractedAttributes = [];
+
+        foreach ($attributes as $key => $value) {
+            $key = substr($key, strlen($columnName) + 1);
+            $extractedAttributes[$key] = $value;
+        }
+
+        return $extractedAttributes;
+    }
 }

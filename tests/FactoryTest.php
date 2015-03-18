@@ -33,6 +33,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         DB::schema()->create('posts', function ($table) {
             $table->increments('id');
+            $table->integer('author_id')->unsigned();
             $table->string('title');
             $table->timestamps();
         });
@@ -41,6 +42,20 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             $table->increments('id');
             $table->integer('post_id')->unsigned();
             $table->string('body');
+            $table->timestamps();
+        });
+
+        DB::schema()->create('people', function ($table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        DB::schema()->create('messages', function ($table) {
+            $table->increments('id');
+            $table->integer('sender_id')->unsigned();
+            $table->integer('receiver_id')->unsigned();
+            $table->string('contents');
             $table->timestamps();
         });
     }
@@ -122,5 +137,47 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     public function it_squawks_if_you_try_to_build_an_unknown()
     {
         TestDummy::attributesFor('ClassThatDoesNotExist');
+    }
+
+    /**
+     * @test
+     */
+    public function it_overrides_relationship_attributes_if_specified()
+    {
+        $comment = TestDummy::create('Comment', [
+            'post_id.title' => 'override'
+        ]);
+
+        assertEquals('override', $comment->post->title);
+    }
+
+    /**
+     * @test
+     */
+    public function it_overrides_relationship_attributes_separately_for_relationships_that_use_the_same_factory()
+    {
+        $message = TestDummy::create('Message', [
+            'sender_id.name' => 'Adam',
+            'receiver_id.name' => 'Jeffrey',
+        ]);
+
+        assertEquals('Adam', $message->sender->name);
+        assertEquals('Jeffrey', $message->receiver->name);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_override_deeply_nested_relationships()
+    {
+        $comment = TestDummy::create('comment_for_post_by_person', [
+            'body' => 'Overridden Comment Body',
+            'post_id.title' => 'Overridden Post Title',
+            'post_id.author_id.name' => 'Overridden Author Name',
+        ]);
+
+        assertEquals('Overridden Comment Body', $comment->body);
+        assertEquals('Overridden Post Title', $comment->post->title);
+        assertEquals('Overridden Author Name', $comment->post->author->name);
     }
 }
