@@ -80,7 +80,7 @@ class Builder
      *
      * @param  string $name
      * @param  array  $overrides
-     * @return array
+     * @return mixed
      */
     public function build($name, $overrides = [])
     {
