@@ -180,4 +180,18 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         assertEquals('Overridden Post Title', $comment->post->title);
         assertEquals('Overridden Author Name', $comment->post->author->name);
     }
+
+    /**
+     * @test
+     */
+    public function relationship_overrides_are_ignored_if_the_relationship_is_not_actually_defined()
+    {
+        $comment = TestDummy::create('Comment', [
+            'post_id' => 1,
+            'post_id.title' => 'override'
+        ]);
+
+        assertNull($comment->post);
+        assertNull($comment->getAttribute('post_id.title'));
+    }
 }
