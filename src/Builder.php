@@ -229,6 +229,7 @@ class Builder
      * Prepare and assign any applicable relationships.
      *
      * @param  mixed $entity
+     * @param  array $attributes
      * @return mixed
      */
     protected function assignRelationships($entity, $attributes)
