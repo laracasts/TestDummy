@@ -23,9 +23,13 @@ class Designer
      */
     public function define($name, $shortName = '', $attributes = [])
     {
+        // The short name may be a closure, is_callable() is not sufficient
+        // because the short name might be the name of an existing function
+        $shortNameIsAClosure = (is_callable($shortName) && !is_string($shortName));
+
         // The short name is optional. So we'll do a quick
         // check to make the API as simple as possible to use.
-        if (is_array($shortName) || is_callable($shortName)) {
+        if (is_array($shortName) || $shortNameIsAClosure) {
             $attributes = $shortName;
             $shortName = '';
         }
