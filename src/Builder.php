@@ -205,7 +205,9 @@ class Builder
         // closures, which will generate the proper Faker values.
 
         return array_map(function ($attribute) {
-            $attribute = is_callable($attribute) ? $attribute() : $attribute;
+            if ($attribute instanceof \Closure) {
+                $attribute = $attribute();
+            }
 
             // It's possible that the called Faker method returned an array.
             // If that is the case, we'll implode it for the user.
