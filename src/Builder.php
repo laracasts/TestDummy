@@ -150,7 +150,8 @@ class Builder
     }
 
     /**
-     * Remove attributes meant for a relationship
+     * Remove attributes meant for a relationship.
+     *
      * @param  array $attributes
      * @return array
      */
@@ -162,8 +163,9 @@ class Builder
     }
 
     /**
-     * Filter an array using keys instead of values
-     * @param  array  $array
+     * Filter an array using keys instead of values.
+     *
+     * @param  array    $array
      * @param  callable $callback
      * @return array
      */
@@ -269,7 +271,7 @@ class Builder
      *
      * @param  string $factoryName
      * @param  string $relationshipName
-     * @param  string $attributes
+     * @param  array  $attributes
      * @return int
      */
     protected function fetchRelationId($factoryName, $relationshipName, array $attributes)
@@ -281,9 +283,10 @@ class Builder
     }
 
     /**
-     * Extract the attributes meant for a particular relationship
+     * Extract the attributes meant for a particular relationship.
+     *
      * @param  string $columnName
-     * @param  array $attributes
+     * @param  array  $attributes
      * @return array
      */
     protected function extractRelationshipAttributes($columnName, array $attributes)

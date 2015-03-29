@@ -145,9 +145,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         TestDummy::attributesFor('comment');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_overrides_relationship_attributes_if_specified()
     {
         $comment = TestDummy::create('Comment', [
@@ -157,9 +155,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         assertEquals('override', $comment->post->title);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_overrides_relationship_attributes_separately_for_relationships_that_use_the_same_factory()
     {
         $message = TestDummy::create('Message', [
@@ -171,9 +167,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         assertEquals('Jeffrey', $message->receiver->name);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function it_can_override_deeply_nested_relationships()
     {
         $comment = TestDummy::create('comment_for_post_by_person', [
@@ -187,9 +181,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         assertEquals('Overridden Author Name', $comment->post->author->name);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function relationship_overrides_are_ignored_if_the_relationship_is_not_actually_defined()
     {
         $comment = TestDummy::create('Comment', [
@@ -200,7 +192,6 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         assertNull($comment->post);
         assertNull($comment->getAttribute('post_id.title'));
     }
-
 }
 
 function comment()
