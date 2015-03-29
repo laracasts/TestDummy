@@ -157,22 +157,9 @@ class Builder
      */
     protected function filterRelationshipAttributes(array $attributes)
     {
-        return $this->filterArrayKeys($attributes, function ($key) {
+        return filter_array_keys($attributes, function ($key) {
             return ! str_contains($key, '.');
         });
-    }
-
-    /**
-     * Filter an array using keys instead of values.
-     *
-     * @param  array    $array
-     * @param  callable $callback
-     * @return array
-     */
-    protected function filterArrayKeys(array $array, $callback)
-    {
-        $matchedKeys = array_filter(array_keys($array), $callback);
-        return array_intersect_key($array, array_flip($matchedKeys));
     }
 
     /**
@@ -291,7 +278,7 @@ class Builder
      */
     protected function extractRelationshipAttributes($columnName, array $attributes)
     {
-        $attributes = $this->filterArrayKeys($attributes, function ($key) use ($columnName) {
+        $attributes = filter_array_keys($attributes, function ($key) use ($columnName) {
             return starts_with($key, $columnName . '.');
         });
 

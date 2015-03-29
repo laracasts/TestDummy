@@ -22,7 +22,10 @@
     "autoload": {
         "psr-4": {
             "Laracasts\\TestDummy\\": "src/"
-        }
+        },
+        "files": [
+            "src/functions.php"
+        ]
     },
     "autoload-dev": {
         "classmap": [
