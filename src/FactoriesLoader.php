@@ -2,8 +2,6 @@
 
 namespace Laracasts\TestDummy;
 
-use Faker\Factory as Faker;
-
 class FactoriesLoader
 {
 
