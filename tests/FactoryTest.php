@@ -123,4 +123,15 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         TestDummy::attributesFor('ClassThatDoesNotExist');
     }
+
+    /** @test */
+    public function it_does_not_look_for_existing_global_functions_when_using_short_names()
+    {
+        TestDummy::attributesFor('comment');
+    }
+}
+
+function comment()
+{
+    throw new \Exception('This function should never be called by TestDummy.');
 }

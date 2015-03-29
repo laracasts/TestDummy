@@ -13,6 +13,11 @@ $factory('Comment', [
     'body' => $faker->word
 ]);
 
+$factory('Comment', 'comment', [
+    'post_id' => 'factory:Post',
+    'body' => $faker->word
+]);
+
 $factory('Foo', function($faker) {
     return [
         'name' => $faker->word

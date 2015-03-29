@@ -2,6 +2,8 @@
 
 namespace Laracasts\TestDummy;
 
+use Closure;
+
 
 class Designer
 {
@@ -23,9 +25,10 @@ class Designer
      */
     public function define($name, $shortName = '', $attributes = [])
     {
-        // The short name is optional. So we'll do a quick
-        // check to make the API as simple as possible to use.
-        if (is_array($shortName) || is_callable($shortName)) {
+        // The short name is optional. We'll do a quick check
+        // to keep the API as simple as possible to use.
+
+        if (is_array($shortName) || $shortName instanceof Closure) {
             $attributes = $shortName;
             $shortName = '';
         }
