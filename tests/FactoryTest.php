@@ -88,10 +88,13 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_allows_a_closure_to_be_used_for_defining_factories()
     {
-        $foo = TestDummy::build('Foo');
+        $comments = TestDummy::times(2)->create('Comment');
 
-        assertInstanceOf('Foo', $foo);
-        assertInternalType('string', $foo->name);
+        assertInstanceOf('Comment', $comments[0]);
+        assertInternalType('string', $comments[0]->body);
+
+        // Faker should produce a unique value for each generation.
+        assertNotEquals($comments[0]->body, $comments[1]->body);
     }
 
     /** @test */

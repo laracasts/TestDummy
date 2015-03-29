@@ -3,6 +3,8 @@
 namespace Laracasts\TestDummy;
 
 use Illuminate\Support\Collection;
+use Faker\Factory as Faker;
+use Closure;
 
 class Builder
 {
@@ -26,7 +28,14 @@ class Builder
      *
      * @var IsPersistable
      */
-    private $model;
+    protected $model;
+
+    /**
+     * The Faker instance.
+     *
+     * @var Faker
+     */
+    protected $faker;
 
     /**
      * Create a new Builder instance.
@@ -192,11 +201,19 @@ class Builder
     /**
      * Apply Faker dummy values to the attributes.
      *
-     * @param  array $attributes
+     * @param  object|array $attributes
      * @return array
      */
-    protected function triggerFakerOnAttributes(array $attributes)
+    protected function triggerFakerOnAttributes($attributes)
     {
+        // If $attributes is a closure, then we need to call it
+        // and fetch the returned array. This way, we ensure
+        // that we always fetch unique faked values.
+
+        if ($attributes instanceof Closure) {
+            $attributes = $attributes($this->faker());
+        }
+
         // To ensure that we don't use the same Faker value for every
         // single factory of the same name, all Faker properties are
         // wrapped in closures.
@@ -205,7 +222,7 @@ class Builder
         // closures, which will generate the proper Faker values.
 
         return array_map(function ($attribute) {
-            if ($attribute instanceof \Closure) {
+            if ($attribute instanceof Closure) {
                 $attribute = $attribute();
             }
 
@@ -214,6 +231,20 @@ class Builder
 
             return is_array($attribute) ? implode(' ', $attribute) : $attribute;
         }, $attributes);
+    }
+
+    /**
+     * Get a Faker instance.
+     *
+     * @return Faker
+     */
+    protected function faker()
+    {
+        if ( ! $this->faker) {
+            $this->faker = Faker::create();
+        }
+
+        return $this->faker;
     }
 
     /**

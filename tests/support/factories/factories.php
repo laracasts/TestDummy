@@ -9,10 +9,13 @@ $factory('Post', [
     'title' => 'Post Title'
 ]);
 
-$factory('Comment', [
-    'post_id' => 'factory:Post',
-    'body' => $faker->word
-]);
+$factory('Comment', function($faker) {
+
+    return [
+        'post_id' => 'factory:Post',
+        'body' => $faker->word
+    ];
+});
 
 $factory('Comment', 'comment', []);
 
