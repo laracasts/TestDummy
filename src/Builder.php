@@ -221,15 +221,8 @@ class Builder
         // So we can now filter through our attributes and call these
         // closures, which will generate the proper Faker values.
 
-        return array_map(function ($attribute) {
-            if ($attribute instanceof Closure) {
-                $attribute = $attribute();
-            }
 
-            // It's possible that the called Faker method returned an array.
-            // If that is the case, we'll implode it for the user.
-
-            return array_map([$this,'runFaker'], $attributes);
+	return array_map([$this,'runFaker'], $attributes);
     }
     
 	/**
