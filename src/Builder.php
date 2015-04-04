@@ -239,7 +239,7 @@ class Builder
 	 *
 	 * @return array|string
 	 */
-	private function runFaker($attribute)
+	protected function runFaker($attribute)
 	{
 		if ($attribute instanceof Closure) {
 			$attribute = $attribute();
