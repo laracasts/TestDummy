@@ -64,7 +64,9 @@ class FactoriesFinder
      */
     private function getExtension($file)
     {
-        return isset(pathinfo($file)['extension']) ? pathinfo($file)['extension'] : null;
+        $fileInfo = pathinfo($file);
+
+        return isset($fileInfo['extension']) ? $fileInfo['extension'] : null;
     }
 
 }
