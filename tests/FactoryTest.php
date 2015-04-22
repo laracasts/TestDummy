@@ -4,6 +4,8 @@ use Laracasts\TestDummy\Factory as TestDummy;
 
 use Illuminate\Database\Capsule\Manager as DB;
 
+require 'vendor/phpunit/phpunit/src/Framework/Assert/Functions.php';
+
 class FactoryTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
