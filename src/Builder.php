@@ -221,41 +221,37 @@ class Builder
         // So we can now filter through our attributes and call these
         // closures, which will generate the proper Faker values.
 
-
-	return array_map([$this,'runFaker'], $attributes);
+        return array_map([$this, 'runFaker'], $attributes);
     }
-    
-	/**
-	 * Apply Faker dummy values.
-	 *
-	 * @param $attribute
-	 *
-	 * @return array|string
-	 */
-	protected function runFaker($attribute)
-	{
-		if ($attribute instanceof Closure) {
-			$attribute = $attribute();
-		}
 
-		// It's possible that the called Faker method returned an array.
-		// If that is the case, we'll implode it for the user.
-		if (is_array($attribute)) {
+    /**
+     * Apply Faker dummy values.
+     *
+     * @param  mixed $attribute
+     * @return array|string
+     */
+    protected function runFaker($attribute)
+    {
+        if ($attribute instanceof Closure) {
+            $attribute = $attribute();
+        }
 
-			// If $attribute is associative array
-			if (array_values($attribute) !== $attribute) {
-				return array_map([
-						$this,
-						'runfaker'
-				], $attribute);
-			} else {
-				return implode(' ',
-						$attribute);
-			}
-		} else {
-			return $attribute;
-		}
-	}
+        // It's possible that the called Faker method returned an array.
+        // If that is the case, we'll implode it for the user.
+
+        if (is_array($attribute)) {
+
+            // If we're dealing with an associative array...
+
+            if (array_values($attribute) !== $attribute) {
+                return array_map([$this, 'runFaker'], $attribute);
+            }
+
+            return implode(' ', $attribute);
+        }
+
+        return $attribute;
+    }
 
     /**
      * Get a Faker instance.
@@ -264,7 +260,7 @@ class Builder
      */
     protected function faker()
     {
-        if ( ! $this->faker) {
+        if (! $this->faker) {
             $this->faker = Faker::create();
         }
 
