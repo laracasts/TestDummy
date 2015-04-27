@@ -7,9 +7,13 @@ use Prophecy\Argument;
 
 class FactoriesFinderSpec extends ObjectBehavior
 {
+	private $stubDir;
+
 	function let()
 	{
-		$this->beConstructedWith(__DIR__.'/helpers');
+		$this->stubDir = __DIR__.'/helpers/';
+
+		$this->beConstructedWith($this->stubDir);
 	}
 
 	function it_is_initializable()
@@ -19,20 +23,37 @@ class FactoriesFinderSpec extends ObjectBehavior
 
 	function it_hunts_down_the_fixtures_file_like_a_dog()
 	{
-		$this->find()->shouldBe([__DIR__.'/helpers/all.php']);
+		$this->find()->shouldBe([$this->stubDir.'all.php']);
 	}
 
 	function it_ignores_non_php_files()
 	{
-		$dir = __DIR__.'/helpers';
-		$notPhpFile = $dir .'/foo.txt';
+		$notPhpFile = $this->createFile('foo.txt');
 
-		// We'll create a file that should not be included...
-		file_put_contents($notPhpFile, '');
-
-		$this->find()->shouldBe([$dir.'/all.php']);
+		$this->find()->shouldBe([$this->stubDir.'all.php']);
 
 		unlink($notPhpFile);
 	}
 
+	function it_ignores_files_without_extension()
+	{
+		$fileWithoutExtension = $this->createFile('foo');
+
+		$this->find()->shouldBe([$this->stubDir.'all.php']);
+
+		unlink($fileWithoutExtension);
+	}
+
+	private function createFile($filename, $dir = null, $content = '')
+	{
+		if ($dir === null) {
+			$dir = $this->stubDir;
+		}
+
+		$file = $dir . $filename;
+
+		file_put_contents($file, $content);
+
+		return $file;
+	}
 }

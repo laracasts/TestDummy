@@ -35,9 +35,7 @@ class FactoriesFinder
         $files = [];
 
         foreach ($this->getDirectoryIterator() as $file) {
-            $extension = pathinfo($file)['extension'];
-
-            if ($extension !== 'php') continue;
+            if ($this->getExtension($file) !== 'php') continue;
 
             $files[] = $file->getPathname();
         }
@@ -56,6 +54,19 @@ class FactoriesFinder
         $directoryIterator->setFlags(RecursiveDirectoryIterator::SKIP_DOTS);
 
         return new RecursiveIteratorIterator($directoryIterator);
+    }
+
+    /**
+     * Get the extension of a file.
+     *
+     * @param $file
+     * @return string|null
+     */
+    private function getExtension($file)
+    {
+        $fileInfo = pathinfo($file);
+
+        return isset($fileInfo['extension']) ? $fileInfo['extension'] : null;
     }
 
 }
