@@ -221,17 +221,41 @@ class Builder
         // So we can now filter through our attributes and call these
         // closures, which will generate the proper Faker values.
 
-        return array_map(function ($attribute) {
-            if ($attribute instanceof Closure) {
-                $attribute = $attribute();
-            }
 
-            // It's possible that the called Faker method returned an array.
-            // If that is the case, we'll implode it for the user.
-
-            return is_array($attribute) ? implode(' ', $attribute) : $attribute;
-        }, $attributes);
+	return array_map([$this,'runFaker'], $attributes);
     }
+    
+	/**
+	 * Apply Faker dummy values.
+	 *
+	 * @param $attribute
+	 *
+	 * @return array|string
+	 */
+	protected function runFaker($attribute)
+	{
+		if ($attribute instanceof Closure) {
+			$attribute = $attribute();
+		}
+
+		// It's possible that the called Faker method returned an array.
+		// If that is the case, we'll implode it for the user.
+		if (is_array($attribute)) {
+
+			// If $attribute is associative array
+			if (array_values($attribute) !== $attribute) {
+				return array_map([
+						$this,
+						'runfaker'
+				], $attribute);
+			} else {
+				return implode(' ',
+						$attribute);
+			}
+		} else {
+			return $attribute;
+		}
+	}
 
     /**
      * Get a Faker instance.
