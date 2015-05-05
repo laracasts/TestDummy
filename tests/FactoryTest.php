@@ -57,6 +57,18 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             $table->string('contents');
             $table->timestamps();
         });
+
+        DB::schema()->create('tags', function ($table) {
+            $table->increments('id');
+            $table->string('tag');
+            $table->timestamps();
+        });
+
+        DB::schema()->create('post_tags', function ($table) {
+            $table->increments('id');
+            $table->integer('post_id')->unsigned();
+            $table->integer('tag_id')->unsigned();
+        });
     }
 
     /** @test */
@@ -193,6 +205,17 @@ class FactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertNull($comment->post);
         $this->assertNull($comment->getAttribute('post_id.title'));
+    }
+
+    /** @test */
+    public function it_uses_a_pivot_model()
+    {
+        $parent = new Post;
+        TestDummy::$databaseProvider = new Laracasts\TestDummy\EloquentPivotModel($parent, 'post_tags');
+
+        $postTag = TestDummy::create('PostTag');
+
+        $this->assertInstanceOf('PostTag', $postTag);
     }
 }
 
