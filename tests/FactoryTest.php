@@ -215,6 +215,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
 
         $postTag = TestDummy::create('PostTag');
 
+        TestDummy::$databaseProvider = new Laracasts\TestDummy\EloquentModel();
+
         $this->assertInstanceOf('PostTag', $postTag);
     }
 }

@@ -213,11 +213,12 @@ $adminUser = Factory::create('admin_user');
 
 #### Custom Pivot Models
 
-If your model is a [Custom Pivot Model](http://laravel.com/docs/5.0/eloquent#working-with-pivot-tables) use TestDummy's EloquentPivotModel provider and pass through the pivot models parent and the pivot table name.
+If your model is a [Custom Pivot Model](http://laravel.com/docs/5.0/eloquent#working-with-pivot-tables) use TestDummy's EloquentPivotModel provider and pass through the pivot models parent and the pivot table name. Don't forget to reset the TestDummy database provider back to an Eloquent model before creating any further factories;
 
 ```
 Factory::$databaseProvider = new Laracasts\TestDummy\EloquentPivotModel(new Post, 'post_tags');
 Factory::create('PostTag');
+Factory::$databaseProvider = new Laracasts\TestDummy\EloquentModel();
 ```
 
 #### Defining with Closures
