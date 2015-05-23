@@ -8,6 +8,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
+        date_default_timezone_set("Europe/Stockholm");
 
         TestDummy::$factoriesPath = __DIR__ . '/support/factories';
 
@@ -209,6 +210,64 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Post', $comment->post);
         $this->assertEquals($post->id, $comment->post->id);
     }
+
+    /** @test */
+    public function it_overrides_existing_relationship_attributes_if_specified()
+    {
+        $post = TestDummy::create('Post');
+        $comment = TestDummy::create('comment_for_existing_post', [
+            'post_id.title' => 'override'
+        ]);
+
+        $this->assertEquals('override', $comment->post->title);
+    }
+
+    /** @test */
+    public function it_overrides_existing_relationship_attributes_separately_for_relationships_that_use_the_same_factory()
+    {
+        TestDummy::times(2)->create('Person');    //We create 2 to ensure sender_id != receiver_id, since that will create an error
+        $message = TestDummy::create('message_between_existing_people', [
+            'sender_id.name' => 'Adam',
+            'receiver_id.name' => 'Jeffrey',
+        ]);
+
+        /*
+         * If the test fails, run again, you ran into a collision
+         */
+
+        $this->assertEquals('Adam', $message->sender->name);
+        $this->assertEquals('Jeffrey', $message->receiver->name);
+    }
+
+    /** @test */
+    public function it_handles_both_creating_new_relations_and_using_existing_ones_in_the_same_factory()
+    {
+        TestDummy::create('Person');
+        $message = TestDummy::create('message_between_existing_and_new_people', [
+            'sender_id.name' => 'Adam',
+            'receiver_id.name' => 'Jeffrey',
+        ]);
+
+        $this->assertEquals('Adam', $message->sender->name);
+        $this->assertEquals('Jeffrey', $message->receiver->name);
+    }
+
+    /** @test */
+    public function it_can_override_deeply_nested_existing_relationships()
+    {
+        TestDummy::create('Person');
+        TestDummy::create('post_by_existing_person');
+        $comment = TestDummy::create('comment_for_existing_post_by_existing_person', [
+            'body' => 'Overridden Comment Body',
+            'post_id.title' => 'Overridden Post Title',
+            'post_id.author_id.name' => 'Overridden Author Name',
+        ]);
+
+        $this->assertEquals('Overridden Comment Body', $comment->body);
+        $this->assertEquals('Overridden Post Title', $comment->post->title);
+        $this->assertEquals('Overridden Author Name', $comment->post->author->name);
+    }
+
 
 }
 
