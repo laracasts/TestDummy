@@ -139,6 +139,11 @@ class Builder
         return $entity;
     }
 
+    protected function ()
+    {
+        
+    }
+
     protected function existingIndex($name)
     {
         $indices = $this->model->allIndices($name);
@@ -296,7 +301,6 @@ class Builder
                 $entity[$columnName] = $this->fetchRelationId($relationship, $columnName, $attributes);
             }
         }
-
         return $entity;
     }
 
@@ -308,7 +312,7 @@ class Builder
      */
     protected function findRelation($attribute)
     {
-        if (is_string($attribute) && preg_match('/^factory:(.+)$/i', $attribute, $matches)) {
+        if (is_string($attribute) && (preg_match('/^factory:(.+)$/i', $attribute, $matches) || preg_match('/^model:(.+)$/i', $attribute, $matches))) {
 //            return $matches[1];
             return $matches;
         }
@@ -334,8 +338,11 @@ class Builder
                 $relationKey = $this->persist($factoryName[1], $attributes)->getKey();
                 break;
             case 'model:':
-//                $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
-                $relationKey = $this->exists($relationshipName);
+                $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
+                $relationKey = $this->existingIndex($factoryName[1]);
+                break;
+            default:
+                throw new \Exception('Relation identifier not allowed. Please use model or factory.');
         }
 //        $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
 //        $relationKey = $this->persist($factoryName, $attributes)->getKey();
