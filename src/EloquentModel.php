@@ -25,6 +25,14 @@ class EloquentModel implements IsPersistable
     }
 
 
+    /**
+     * Get a random entity and fill any override attributes
+     * @param $type
+     * @param array $attributes
+     * @param array $existingKeys
+     * @return mixed
+     * @throws TestDummyException
+     */
     public function random($type, array $attributes, array $existingKeys)
     {
         if ( ! class_exists($type)) {
@@ -80,6 +88,14 @@ class EloquentModel implements IsPersistable
         return $object;
     }
 
+    /**
+     * Fetch a random entity from the database which is not already in use
+     * If none exists, create a new one
+     *
+     * @param $type
+     * @param array $existingKeys
+     * @return mixed
+     */
     private function getRandom($type, array $existingKeys)
     {
         $object = new $type;

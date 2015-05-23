@@ -139,6 +139,15 @@ class Builder
         return $entity;
     }
 
+    /**
+     * Fetch a random existing entity, or create a new one
+     *
+     * @param $name
+     * @param $overrides
+     * @param array $existingKeys
+     * @return mixed
+     * @throws TestDummyException
+     */
     protected function random($name, $overrides, array $existingKeys = [])
     {
         $attributes = $this->getAttributes($name, $overrides);
@@ -150,6 +159,13 @@ class Builder
         return $this->model->random($class, $attributes, $existingKeys);
     }
 
+    /**
+     * Assign relationships to a randomly fetched entity
+     * @param $name
+     * @param $attributes
+     * @param array $existingKeys
+     * @return mixed
+     */
     public function exists($name, $attributes, array $existingKeys = [])
     {
         $entity = $this->random($name, $attributes, $existingKeys);
@@ -323,7 +339,6 @@ class Builder
     protected function findRelation($attribute)
     {
         if (is_string($attribute) && (preg_match('/^factory:(.+)$/i', $attribute, $matches) || preg_match('/^model:(.+)$/i', $attribute, $matches))) {
-//            return $matches[1];
             return $matches;
         }
 
@@ -336,7 +351,9 @@ class Builder
      * @param  string $factoryName
      * @param  string $relationshipName
      * @param  array  $attributes
+     * @param  array  $existingKeys
      * @return int
+     * @throws \Exception
      */
     protected function fetchRelationId($factoryName, $relationshipName, array $attributes, array $existingKeys)
     {
@@ -354,8 +371,6 @@ class Builder
             default:
                 throw new \Exception('Relation identifier not allowed. Please use model or factory.');
         }
-//        $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
-//        $relationKey = $this->persist($factoryName, $attributes)->getKey();
 
         return $relationKey;
     }
