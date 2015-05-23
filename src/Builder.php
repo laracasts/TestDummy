@@ -139,6 +139,14 @@ class Builder
         return $entity;
     }
 
+    protected function existingIndex($name)
+    {
+        $indices = $this->model->allIndices($name);
+        $rand = mt_rand(0, count($indices)-1);
+        $index = $indices[$rand];
+        return $index;
+    }
+
     /**
      * Merge the fixture with any potential overrides.
      *
@@ -284,6 +292,7 @@ class Builder
 
         foreach ($modelAttributes as $columnName => $value) {
             if ($relationship = $this->findRelation($value)) {
+                // $relationship is now our $matches array from findRelation
                 $entity[$columnName] = $this->fetchRelationId($relationship, $columnName, $attributes);
             }
         }
@@ -300,7 +309,8 @@ class Builder
     protected function findRelation($attribute)
     {
         if (is_string($attribute) && preg_match('/^factory:(.+)$/i', $attribute, $matches)) {
-            return $matches[1];
+//            return $matches[1];
+            return $matches;
         }
 
         return false;
@@ -316,8 +326,19 @@ class Builder
      */
     protected function fetchRelationId($factoryName, $relationshipName, array $attributes)
     {
-        $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
-        $relationKey = $this->persist($factoryName, $attributes)->getKey();
+        // $factoryName is our matches, containing both 'model:factoryName'/'factory:factoryName' and just the factoryName
+        $type = preg_replace('/' . $factoryName[1] . '/', '', $factoryName[0]);
+        switch ($type) {
+            case 'factory:':
+                $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
+                $relationKey = $this->persist($factoryName[1], $attributes)->getKey();
+                break;
+            case 'model:':
+//                $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
+                $relationKey = $this->exists($relationshipName);
+        }
+//        $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
+//        $relationKey = $this->persist($factoryName, $attributes)->getKey();
 
         return $relationKey;
     }
