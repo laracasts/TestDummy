@@ -31,7 +31,13 @@ class EloquentModel implements IsPersistable
             throw new TestDummyException("The {$type} model was not found.");
         }
 
-        return $this->getRandom($type);
+        $model = $this->getRandom($type);
+
+        Eloquent::unguard();
+        $model->fill($attributes);
+        Eloquent::reguard();
+
+        return $model;
     }
 
     /**
