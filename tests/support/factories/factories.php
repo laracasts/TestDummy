@@ -9,6 +9,11 @@ $factory('Post', [
     'title' => 'Post Title'
 ]);
 
+$factory('Post', 'post_by_existing_person', [
+    'author_id' => 'model:Person',
+    'title' => 'Post Title'
+]);
+
 $factory('Comment', function($faker) {
 
     return [
@@ -26,6 +31,11 @@ $factory('Comment', 'comment_for_post_by_person', [
 
 $factory('Comment', 'comment_for_existing_post', [
     'post_id' => 'model:Post',
+    'body' => $faker->word
+]);
+
+$factory('Comment', 'comment_for_existing_post_by_existing_person', [
+    'post_id' => 'model:post_by_existing_person',
     'body' => $faker->word
 ]);
 
