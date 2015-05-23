@@ -84,8 +84,11 @@ class EloquentModel implements IsPersistable
     {
         $object = new $type;
         $count = $type::count() - count($existingKeys);
-        $rand = mt_rand(0,$count-1);
-        return $object->whereNotIn($object->getKeyName(), $existingKeys)->get()[$rand];
+        if ($count > 0) {
+            $rand = mt_rand(0,$count-1);
+            return $object->whereNotIn($object->getKeyName(), $existingKeys)->get()[$rand];
+        }
+        return $object;
     }
 
 }
