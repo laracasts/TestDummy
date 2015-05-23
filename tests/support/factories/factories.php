@@ -41,6 +41,18 @@ $factory('Message', [
     'receiver_id' => 'factory:Person',
 ]);
 
+$factory('Message', 'message_between_existing_people', [
+    'contents' => $faker->sentence,
+    'sender_id' => 'model:Person',
+    'receiver_id' => 'model:Person',
+]);
+
+$factory('Message', 'message_between_existing_and_new_people', [
+    'contents' => $faker->sentence,
+    'sender_id' => 'factory:Person',
+    'receiver_id' => 'model:Person',
+]);
+
 $factory('Person', [
     'name' => $faker->name
 ]);
