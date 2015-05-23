@@ -24,6 +24,16 @@ class EloquentModel implements IsPersistable
         return $this->fill($type, $attributes);
     }
 
+
+    public function random($type, array $attributes)
+    {
+        if ( ! class_exists($type)) {
+            throw new TestDummyException("The {$type} model was not found.");
+        }
+
+        return $this->getRandom($type);
+    }
+
     /**
      * Persist the entity.
      *
@@ -64,10 +74,12 @@ class EloquentModel implements IsPersistable
         return $object;
     }
 
-    public function allIndices($type)
+    private function getRandom($type)
     {
         $object = new $type;
-        return $object->all()->lists($object->getKeyName())->toArray();
+        $count = $type::count();
+        $rand = mt_rand(0,$count-1);
+        return $object->all()[$rand];
     }
 
 }
