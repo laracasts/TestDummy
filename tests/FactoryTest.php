@@ -231,10 +231,6 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             'receiver_id.name' => 'Jeffrey',
         ]);
 
-        /*
-         * If the test fails, run again, you ran into a collision
-         */
-
         $this->assertEquals('Adam', $message->sender->name);
         $this->assertEquals('Jeffrey', $message->receiver->name);
     }
@@ -266,6 +262,26 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Overridden Comment Body', $comment->body);
         $this->assertEquals('Overridden Post Title', $comment->post->title);
         $this->assertEquals('Overridden Author Name', $comment->post->author->name);
+    }
+
+    /** @test */
+    public function it_creates_models_if_no_existing_are_found()
+    {
+        $comment = TestDummy::create('comment_for_existing_post');
+
+        $this->assertInstanceOf('Comment', $comment);
+        $this->assertInstanceOf('Post', $comment->post);
+    }
+
+    /** @test */
+    public function it_can_create_and_persist_multiple_times_with_existing()
+    {
+        $posts = TestDummy::times(3)->create('post_by_existing_person');
+
+        $this->assertInstanceOf('Illuminate\Support\Collection', $posts);
+        $this->assertCount(3, $posts);
+        // Since we have no existing person the first time, it will be automatically created, but only once...
+        $this->assertEquals($posts[0]->author, $posts[1]->author);
     }
 
 
