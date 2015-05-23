@@ -64,10 +64,10 @@ class EloquentModel implements IsPersistable
         return $object;
     }
 
-    private function allIndices($type)
+    public function allIndices($type)
     {
         $object = new $type;
-        return $type->all()->get($object->primaryKey);
+        return $object->all()->lists($object->getKeyName())->toArray();
     }
 
 }
