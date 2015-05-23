@@ -139,9 +139,25 @@ class Builder
         return $entity;
     }
 
-    protected function ()
+    protected function random($name, $overrides)
     {
-        
+        $attributes = $this->getAttributes($name, $overrides);
+        $class = $this->getFixture($name)->name;
+
+        // We'll pass off the process of creating the entity.
+        // That way, folks can use different persistence layers.
+
+        return $this->model->random($class, $attributes);
+    }
+
+    protected function exists($name, $attributes)
+    {
+        $entity = $this->random($name, $attributes);
+
+        $this->assignRelationships($entity, $attributes);
+        $this->model->save($entity);
+
+        return $entity;
     }
 
     protected function existingIndex($name)
