@@ -284,6 +284,14 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($posts[0]->author, $posts[1]->author);
     }
 
+    /** @test */
+    public function it_will_create_a_new_when_two_are_required_but_only_one_exists()
+    {
+        TestDummy::create('Person');    //We create 2 to ensure sender_id != receiver_id, since that will create an error
+        $message = TestDummy::create('message_between_existing_people');
+
+        $this->assertNotEquals($message->sender, $message->receiver);
+    }
 
 }
 
