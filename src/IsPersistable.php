@@ -31,4 +31,6 @@ interface IsPersistable
      */
     public function getAttributes($entity);
 
+    public function random($type, array $attributes);
+
 }
