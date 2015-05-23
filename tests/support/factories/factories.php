@@ -24,6 +24,11 @@ $factory('Comment', 'comment_for_post_by_person', [
     'body' => $faker->word
 ]);
 
+$factory('Comment', 'comment_for_existing_post', [
+    'post_id' => 'model:Post',
+    'body' => $faker->word
+]);
+
 $factory('Foo', function($faker) {
     return [
         'name' => $faker->word
