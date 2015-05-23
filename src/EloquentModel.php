@@ -25,13 +25,13 @@ class EloquentModel implements IsPersistable
     }
 
 
-    public function random($type, array $attributes)
+    public function random($type, array $attributes, array $existingKeys)
     {
         if ( ! class_exists($type)) {
             throw new TestDummyException("The {$type} model was not found.");
         }
 
-        $model = $this->getRandom($type);
+        $model = $this->getRandom($type, $existingKeys);
 
         Eloquent::unguard();
         $model->fill($attributes);
@@ -80,12 +80,12 @@ class EloquentModel implements IsPersistable
         return $object;
     }
 
-    private function getRandom($type)
+    private function getRandom($type, array $existingKeys)
     {
         $object = new $type;
-        $count = $type::count();
+        $count = $type::count() - count($existingKeys);
         $rand = mt_rand(0,$count-1);
-        return $object->all()[$rand];
+        return $object->whereNotIn($object->getKeyName(), $existingKeys)->get()[$rand];
     }
 
 }
