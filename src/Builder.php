@@ -150,7 +150,7 @@ class Builder
         return $this->model->random($class, $attributes);
     }
 
-    protected function exists($name, $attributes)
+    public function exists($name, $attributes)
     {
         $entity = $this->random($name, $attributes);
 
@@ -158,14 +158,6 @@ class Builder
         $this->model->save($entity);
 
         return $entity;
-    }
-
-    protected function existingIndex($name)
-    {
-        $indices = $this->model->allIndices($name);
-        $rand = mt_rand(0, count($indices)-1);
-        $index = $indices[$rand];
-        return $index;
     }
 
     /**
@@ -355,7 +347,7 @@ class Builder
                 break;
             case 'model:':
                 $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
-                $relationKey = $this->existingIndex($factoryName[1]);
+                $relationKey = $this->exists($factoryName[1], $attributes)->getKey();
                 break;
             default:
                 throw new \Exception('Relation identifier not allowed. Please use model or factory.');
