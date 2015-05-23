@@ -139,7 +139,7 @@ class Builder
         return $entity;
     }
 
-    protected function random($name, $overrides)
+    protected function random($name, $overrides, array $existingKeys = [])
     {
         $attributes = $this->getAttributes($name, $overrides);
         $class = $this->getFixture($name)->name;
@@ -147,12 +147,12 @@ class Builder
         // We'll pass off the process of creating the entity.
         // That way, folks can use different persistence layers.
 
-        return $this->model->random($class, $attributes);
+        return $this->model->random($class, $attributes, $existingKeys);
     }
 
-    public function exists($name, $attributes)
+    public function exists($name, $attributes, array $existingKeys = [])
     {
-        $entity = $this->random($name, $attributes);
+        $entity = $this->random($name, $attributes, $existingKeys);
 
         $this->assignRelationships($entity, $attributes);
         $this->model->save($entity);
@@ -303,10 +303,12 @@ class Builder
         // to see if there are any defined relationships. If there
         // are, then we'll need to create those records as well.
 
+        $existing = [];
+
         foreach ($modelAttributes as $columnName => $value) {
             if ($relationship = $this->findRelation($value)) {
                 // $relationship is now our $matches array from findRelation
-                $entity[$columnName] = $this->fetchRelationId($relationship, $columnName, $attributes);
+                $existing[] = $entity[$columnName] = $this->fetchRelationId($relationship, $columnName, $attributes, $existing);
             }
         }
         return $entity;
@@ -336,7 +338,7 @@ class Builder
      * @param  array  $attributes
      * @return int
      */
-    protected function fetchRelationId($factoryName, $relationshipName, array $attributes)
+    protected function fetchRelationId($factoryName, $relationshipName, array $attributes, array $existingKeys)
     {
         // $factoryName is our matches, containing both 'model:factoryName'/'factory:factoryName' and just the factoryName
         $type = preg_replace('/' . $factoryName[1] . '/', '', $factoryName[0]);
@@ -347,7 +349,7 @@ class Builder
                 break;
             case 'model:':
                 $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
-                $relationKey = $this->exists($factoryName[1], $attributes)->getKey();
+                $relationKey = $this->exists($factoryName[1], $attributes, $existingKeys)->getKey();
                 break;
             default:
                 throw new \Exception('Relation identifier not allowed. Please use model or factory.');
