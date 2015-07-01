@@ -5,6 +5,7 @@ namespace Laracasts\TestDummy;
 use Illuminate\Support\Collection;
 use Faker\Factory as Faker;
 use Closure;
+use Laracasts\TestDummy\PersistableModel\IsPersistable;
 
 class Builder
 {
@@ -111,7 +112,8 @@ class Builder
      */
     public function create($name, array $overrides = [])
     {
-        for ($i = 0; $i < $this->getTimes(); $i++) {
+        $times = $this->getTimes();
+        for ($i = 0; $i < $times; $i++) {
             $entities[] = $this->persist($name, $overrides);
         }
 
@@ -134,7 +136,11 @@ class Builder
         $entity = $this->build($name, $attributes);
 
         $this->assignRelationships($entity, $attributes);
-        $this->model->save($entity);
+        $savedEntity = $this->model->save($entity);
+
+        if (null !== $savedEntity) {
+            return $savedEntity;
+        }
 
         return $entity;
     }
@@ -166,7 +172,7 @@ class Builder
      */
     protected function filterRelationshipAttributes(array $attributes)
     {
-        return filter_array_keys($attributes, function ($key) {
+        return $this->filterArrayKeys($attributes, function ($key) {
             return ! str_contains($key, '.');
         });
     }
@@ -182,7 +188,6 @@ class Builder
     {
         // The user may provide either a class name or a short
         // name identifier. So we'll track it down here.
-
         foreach ($this->fixtures as $fixture) {
             if ($fixture->shortName == $name) {
                 return $fixture;
@@ -236,20 +241,6 @@ class Builder
             $attribute = $attribute();
         }
 
-        // It's possible that the called Faker method returned an array.
-        // If that is the case, we'll implode it for the user.
-
-        if (is_array($attribute)) {
-
-            // If we're dealing with an associative array...
-
-            if (array_values($attribute) !== $attribute) {
-                return array_map([$this, 'runFaker'], $attribute);
-            }
-
-            return implode(' ', $attribute);
-        }
-
         return $attribute;
     }
 
@@ -260,7 +251,7 @@ class Builder
      */
     protected function faker()
     {
-        if (! $this->faker) {
+        if ( ! $this->faker) {
             $this->faker = Faker::create();
         }
 
@@ -331,7 +322,7 @@ class Builder
      */
     protected function extractRelationshipAttributes($columnName, array $attributes)
     {
-        $attributes = filter_array_keys($attributes, function ($key) use ($columnName) {
+        $attributes = $this->filterArrayKeys($attributes, function ($key) use ($columnName) {
             return starts_with($key, $columnName . '.');
         });
 
@@ -344,4 +335,19 @@ class Builder
 
         return $extractedAttributes;
     }
+
+        /**
+         * Filter an array using keys instead of values.
+         *
+         * @param  array    $array
+         * @param  callable $callback
+         * @return array
+         */
+    protected function filterArrayKeys(array $array, $callback)
+    {
+        $matchedKeys = array_filter(array_keys($array), $callback);
+
+        return array_intersect_key($array, array_flip($matchedKeys));
+    }
+
 }

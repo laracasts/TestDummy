@@ -2,6 +2,8 @@
 
 namespace Laracasts\TestDummy;
 
+use Symfony\Component\Process\Exception\LogicException;
+
 class Definition
 {
 
@@ -10,21 +12,22 @@ class Definition
      *
      * @var string
      */
-    public $name;
+    protected $name;
 
     /**
      * The abbreviated short-name.
      *
      * @var string
      */
-    public $shortName;
+    protected $shortName;
 
     /**
      * Attributes for the factory.
      *
      * @var array
      */
-    public $attributes;
+    protected $attributes;
+
 
     /**
      * Create a new Definition instance.
@@ -40,4 +43,14 @@ class Definition
         $this->attributes = $attributes;
     }
 
+    public function __set($attribute, $value)
+    {
+        //We want to keep the object always in the same state
+        throw new LogicException('You cannot change any value of this object');
+    }
+
+    public function __get($attribute)
+    {
+        return $this->{$attribute};
+    }
 }

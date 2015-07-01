@@ -1,6 +1,6 @@
 <?php
 
-namespace Laracasts\TestDummy;
+namespace Laracasts\TestDummy\PersistableModel;
 
 interface IsPersistable
 {

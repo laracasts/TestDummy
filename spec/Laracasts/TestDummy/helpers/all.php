@@ -10,3 +10,9 @@ $factory('Artist', function ($faker) {
         'name' => $faker->name
     ];
 });
+
+$factory('Foo', function ($faker) {
+    return [
+        'name' => $faker->name
+    ];
+});

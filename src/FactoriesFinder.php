@@ -4,6 +4,7 @@ namespace Laracasts\TestDummy;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use RegexIterator;
 
 class FactoriesFinder
 {
@@ -32,15 +33,10 @@ class FactoriesFinder
      */
     public function find()
     {
-        $files = [];
+        $iterator = $this->getDirectoryIterator();
+        $iterator = new RegexIterator($iterator, '#^.*\.(php)+$#Di');
 
-        foreach ($this->getDirectoryIterator() as $file) {
-            if ($this->getExtension($file) !== 'php') continue;
-
-            $files[] = $file->getPathname();
-        }
-
-        return $files;
+        return array_keys(iterator_to_array($iterator));
     }
 
     /**
@@ -55,18 +51,4 @@ class FactoriesFinder
 
         return new RecursiveIteratorIterator($directoryIterator);
     }
-
-    /**
-     * Get the extension of a file.
-     *
-     * @param $file
-     * @return string|null
-     */
-    private function getExtension($file)
-    {
-        $fileInfo = pathinfo($file);
-
-        return isset($fileInfo['extension']) ? $fileInfo['extension'] : null;
-    }
-
 }

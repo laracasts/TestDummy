@@ -2,7 +2,8 @@
 
 namespace Laracasts\TestDummy;
 
-use Laracasts\TestDummy\IsPersistable;
+use Laracasts\TestDummy\PersistableModel\IsPersistable;
+use Laracasts\TestDummy\PersistableModel\EloquentModel;
 
 class Factory
 {
@@ -28,16 +29,19 @@ class Factory
      */
     public static $databaseProvider;
 
+    protected $builder;
+
     /**
      * Create a new factory instance.
      *
      * @param string        $factoriesPath
      * @param IsPersistable $databaseProvider
      */
-    public function __construct($factoriesPath = null, IsPersistable $databaseProvider = null)
+    public function __construct($factoriesPath = null, IsPersistable $databaseProvider = null, Builder $builder = null)
     {
         $this->loadFactories($factoriesPath);
         $this->setDatabaseProvider($databaseProvider);
+        $this->setBuilder($builder);
     }
 
     /**
@@ -114,7 +118,7 @@ class Factory
      */
     public function getBuilder()
     {
-        return new Builder($this->databaseProvider(), $this->factories());
+        return $this->builder;
     }
 
     /**
@@ -143,6 +147,15 @@ class Factory
         if ( ! static::$databaseProvider) {
             static::$databaseProvider = $provider ?: new EloquentModel;
         }
+    }
+
+    protected function setBuilder(Builder $builder = null)
+    {
+        if (null == $builder) {
+            $builder = new Builder($this->databaseProvider(), $this->factories());
+        }
+
+        $this->builder = $builder;
     }
 
 }

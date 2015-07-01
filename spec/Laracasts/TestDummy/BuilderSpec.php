@@ -2,14 +2,17 @@
 
 namespace spec\Laracasts\TestDummy;
 
+use Illuminate\Database\ConnectionResolver;
+use Illuminate\Database\Eloquent\Model;
 use Laracasts\TestDummy\FixturesFinder;
+use Laracasts\TestDummy\PersistableModel\FactoryMethodEloquentModel;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Laracasts\TestDummy\IsPersistable;
+use Laracasts\TestDummy\PersistableModel\IsPersistable;
 use Laracasts\TestDummy\Factory;
 
-class BuilderSpec extends ObjectBehavior {
-
+class BuilderSpec extends ObjectBehavior
+{
     function let(IsPersistable $model)
     {
         $factories = (new Factory(__DIR__.'/helpers'))->factories();
@@ -88,6 +91,27 @@ class BuilderSpec extends ObjectBehavior {
         $this->shouldThrow('Laracasts\TestDummy\TestDummyException')->duringAttributesFor('Bar');
     }
 
+    function it_can_create_entity_using_create_method(IsPersistable $model, ConnectionResolver $resolver)
+    {
+        $model = new FactoryMethodEloquentModel();
+        $factories = (new Factory(__DIR__.'/helpers', $model))->factories();
+        $this->beConstructedWith($model, $factories);
+
+        $overrides = ['name' => 'The Boogaloos'];
+
+        $this->build('Foo', $overrides)->name->shouldReturn($overrides['name']);
+    }
+
+    function it_should_not_allow_to_set_name_as_not_string(IsPersistable $model)
+    {
+        $model = new FactoryMethodEloquentModel();
+        $factories = (new Factory(__DIR__.'/helpers', $model))->factories();
+        $this->beConstructedWith($model, $factories);
+
+        $overrides = ['name' => ['it is an array']];
+
+        $this->shouldThrow('\InvalidArgumentException')->duringBuild('Foo', $overrides);
+    }
 }
 
 class AlbumStub {

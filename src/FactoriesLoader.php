@@ -18,7 +18,7 @@ class FactoriesLoader
         $designer = new Designer;
         $faker = new FakerAdapter;
 
-        $factory = function ($name, $shortName, $attributes = []) use ($designer, $faker) {
+        $factory = function ($name, $shortName, $attributes = []) use ($designer) {
             return $designer->define($name, $shortName, $attributes);
         };
 
