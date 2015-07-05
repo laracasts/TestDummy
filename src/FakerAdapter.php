@@ -35,7 +35,7 @@ class FakerAdapter
     }
 
     /**
-     * Set the locale of the generator
+     * Sets the locale of the generator
      *
      * @param string $locale
      */

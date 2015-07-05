@@ -17,7 +17,7 @@ class FactoriesLoaderSpec extends ObjectBehavior {
         $factories = $this->load(__DIR__.'/helpers');
 
         $factories->shouldBeArray();
-        $factories->shouldHaveCount(2);
+        $factories->shouldHaveCount(3);
     }
 
     public function getMatchers()

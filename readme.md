@@ -318,3 +318,61 @@ Factory::$databaseProvider = new MyCustomBuilder;
 ```
 
 And that's it! Now, whenever you generate and save an entity, TestDummy will reference your custom implementation.
+
+#### How can I use the bundle with ex. Doctrine?
+
+To connect DummyTests with ex. Doctrine you need to create an own Adapter class which extends FactoryMethodEloquentModel
+class:
+
+```
+use Laracasts\TestDummy\PersistableModel\FactoryMethodEloquentModel;
+use Doctrine\ORM\EntityManager;
+
+class DoctrineModelAdapter extends FactoryMethodEloquentModel
+{
+
+    protected $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * Persist the entity.
+     *
+     * @param  Entity $entity
+     * @return void
+     */
+    public function save($entity)
+    {
+        $this->em->persist($entity);
+        $this->em->flush();
+    }
+}
+```
+
+Then you need to specify a factory method in you Entity class (ex Foo):
+
+```
+class Foo extends Entity
+{
+    //...
+    public static function createFoo($name)
+    {
+        $foo = new static();
+        $foo->setName($name);
+
+        return $foo;
+    }
+
+    //...
+}
+```
+
+Finally, register the Adapter in DummyTests (might be done in AppKernel or bootstrap class).
+
+```
+$doctrineModelAdapter = new DoctrineModelAdapter($entityManager);
+Factory::$databaseProvider = new Laracasts\TestDummy\Builder($doctrineModelAdapter);
+```

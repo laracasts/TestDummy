@@ -1,8 +1,9 @@
 <?php
 
-namespace Laracasts\TestDummy;
+namespace Laracasts\TestDummy\PersistableModel;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Laracasts\TestDummy\PersistableModel\IsPersistable;
 
 class EloquentModel implements IsPersistable
 {
