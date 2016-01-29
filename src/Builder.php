@@ -152,7 +152,7 @@ class Builder
         $attributes = $this->filterRelationshipAttributes($attributes);
 
         $factory = $this->triggerFakerOnAttributes(
-            $this->getFixture($name)->attributes
+            $this->getFixture($name)->attributes, $attributes
         );
 
         return array_merge($factory, $attributes);
@@ -202,16 +202,17 @@ class Builder
      * Apply Faker dummy values to the attributes.
      *
      * @param  object|array $attributes
+     * @param  array        $overrides
      * @return array
      */
-    protected function triggerFakerOnAttributes($attributes)
+    protected function triggerFakerOnAttributes($attributes, array $overrides = [])
     {
         // If $attributes is a closure, then we need to call it
         // and fetch the returned array. This way, we ensure
         // that we always fetch unique faked values.
 
         if ($attributes instanceof Closure) {
-            $attributes = $attributes($this->faker());
+            $attributes = $attributes($this->faker(), $overrides);
         }
 
         // To ensure that we don't use the same Faker value for every
