@@ -1,5 +1,6 @@
 # TestDummy [![Build Status](https://travis-ci.org/laracasts/TestDummy.svg?branch=master)](https://travis-ci.org/laracasts/TestDummy) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/10d5bafd-bc3a-44c3-9449-c0a18c6d2975/mini.png)](https://insight.sensiolabs.com/projects/10d5bafd-bc3a-44c3-9449-c0a18c6d2975)
 
+> Laravel 5 users: this package is no longer required, as the framework now [includes its own way to prepare factories](https://laravel.com/docs/master/database-testing#writing-factories).
 
 TestDummy makes the process of preparing factories (dummy data) for your integration tests as easy as possible. As easy as...
 
