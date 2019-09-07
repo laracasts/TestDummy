@@ -167,7 +167,7 @@ class Builder
     protected function filterRelationshipAttributes(array $attributes)
     {
         return filter_array_keys($attributes, function ($key) {
-            return ! str_contains($key, '.');
+            return ! \Illuminate\Support\Str::contains($key, '.');
         });
     }
 
