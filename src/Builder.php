@@ -3,6 +3,7 @@
 namespace Laracasts\TestDummy;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Faker\Factory as Faker;
 use Closure;
 
@@ -167,7 +168,7 @@ class Builder
     protected function filterRelationshipAttributes(array $attributes)
     {
         return filter_array_keys($attributes, function ($key) {
-            return ! \Illuminate\Support\Str::contains($key, '.');
+            return ! Str::contains($key, '.');
         });
     }
 
@@ -332,7 +333,7 @@ class Builder
     protected function extractRelationshipAttributes($columnName, array $attributes)
     {
         $attributes = filter_array_keys($attributes, function ($key) use ($columnName) {
-            return starts_with($key, $columnName . '.');
+            return Str::startsWith($key, $columnName . '.');
         });
 
         $extractedAttributes = [];
