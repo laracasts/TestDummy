@@ -141,6 +141,43 @@ class Builder
     }
 
     /**
+     * Fetch a random existing entity, or create a new one
+     *
+     * @param $name
+     * @param $overrides
+     * @param array $existingKeys
+     * @return mixed
+     * @throws TestDummyException
+     */
+    protected function random($name, $overrides, array $existingKeys = [])
+    {
+        $attributes = $this->getAttributes($name, $overrides);
+        $class = $this->getFixture($name)->name;
+
+        // We'll pass off the process of creating the entity.
+        // That way, folks can use different persistence layers.
+
+        return $this->model->random($class, $attributes, $existingKeys);
+    }
+
+    /**
+     * Assign relationships to a randomly fetched entity
+     * @param $name
+     * @param $attributes
+     * @param array $existingKeys
+     * @return mixed
+     */
+    public function exists($name, $attributes, array $existingKeys = [])
+    {
+        $entity = $this->random($name, $attributes, $existingKeys);
+
+        $this->assignRelationships($entity, $attributes);
+        $this->model->save($entity);
+
+        return $entity;
+    }
+
+    /**
      * Merge the fixture with any potential overrides.
      *
      * @param  string $name
@@ -283,12 +320,14 @@ class Builder
         // to see if there are any defined relationships. If there
         // are, then we'll need to create those records as well.
 
+        $existing = [];
+
         foreach ($modelAttributes as $columnName => $value) {
             if ($relationship = $this->findRelation($value)) {
-                $entity[$columnName] = $this->fetchRelationId($relationship, $columnName, $attributes);
+                // $relationship is now our $matches array from findRelation
+                $existing[] = $entity[$columnName] = $this->fetchRelationId($relationship, $columnName, $attributes, $existing);
             }
         }
-
         return $entity;
     }
 
@@ -300,8 +339,8 @@ class Builder
      */
     protected function findRelation($attribute)
     {
-        if (is_string($attribute) && preg_match('/^factory:(.+)$/i', $attribute, $matches)) {
-            return $matches[1];
+        if (is_string($attribute) && (preg_match('/^factory:(.+)$/i', $attribute, $matches) || preg_match('/^model:(.+)$/i', $attribute, $matches))) {
+            return $matches;
         }
 
         return false;
@@ -313,12 +352,26 @@ class Builder
      * @param  string $factoryName
      * @param  string $relationshipName
      * @param  array  $attributes
+     * @param  array  $existingKeys
      * @return int
+     * @throws \Exception
      */
-    protected function fetchRelationId($factoryName, $relationshipName, array $attributes)
+    protected function fetchRelationId($factoryName, $relationshipName, array $attributes, array $existingKeys)
     {
-        $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
-        $relationKey = $this->persist($factoryName, $attributes)->getKey();
+        // $factoryName is our matches, containing both 'model:factoryName'/'factory:factoryName' and just the factoryName
+        $type = preg_replace('/' . $factoryName[1] . '/', '', $factoryName[0]);
+        switch ($type) {
+            case 'factory:':
+                $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
+                $relationKey = $this->persist($factoryName[1], $attributes)->getKey();
+                break;
+            case 'model:':
+                $attributes = $this->extractRelationshipAttributes($relationshipName, $attributes);
+                $relationKey = $this->exists($factoryName[1], $attributes, $existingKeys)->getKey();
+                break;
+            default:
+                throw new \Exception('Relation identifier not allowed. Please use model or factory.');
+        }
 
         return $relationKey;
     }

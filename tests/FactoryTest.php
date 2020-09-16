@@ -8,6 +8,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
+        date_default_timezone_set("Europe/Stockholm");
 
         TestDummy::$factoriesPath = __DIR__ . '/support/factories';
 
@@ -64,8 +65,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $attributes = TestDummy::build('Post');
 
-        assertInstanceOf('Post', $attributes);
-        assertEquals('Post Title', $attributes->title);
+        $this->assertInstanceOf('Post', $attributes);
+        $this->assertEquals('Post Title', $attributes->title);
     }
 
     /** @test */
@@ -73,7 +74,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $post = TestDummy::build('Post', ['title' => 'override']);
 
-        assertEquals('override', $post->title);
+        $this->assertEquals('override', $post->title);
     }
 
     /** @test */
@@ -81,7 +82,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $post = TestDummy::build('scheduled_post');
 
-        assertInstanceOf('Post', $post);
+        $this->assertInstanceOf('Post', $post);
     }
 
     /** @test */
@@ -89,11 +90,11 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $comments = TestDummy::times(2)->create('Comment');
 
-        assertInstanceOf('Comment', $comments[0]);
-        assertInternalType('string', $comments[0]->body);
+        $this->assertInstanceOf('Comment', $comments[0]);
+        $this->assertInternalType('string', $comments[0]->body);
 
         // Faker should produce a unique value for each generation.
-        assertNotEquals($comments[0]->body, $comments[1]->body);
+        $this->assertNotEquals($comments[0]->body, $comments[1]->body);
     }
 
     /** @test */
@@ -101,8 +102,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $attributes = TestDummy::attributesFor('Post', ['title' => 'override']);
 
-        assertInternalType('array', $attributes);
-        assertEquals('override', $attributes['title']);
+        $this->assertInternalType('array', $attributes);
+        $this->assertEquals('override', $attributes['title']);
     }
 
     /** @test */
@@ -110,8 +111,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $post = TestDummy::create('Post');
 
-        assertInstanceOf('Post', $post);
-        assertNotNull($post->id);
+        $this->assertInstanceOf('Post', $post);
+        $this->assertNotNull($post->id);
     }
 
     /** @test */
@@ -119,8 +120,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $comment = TestDummy::create('Comment');
 
-        assertInstanceOf('Comment', $comment);
-        assertInstanceOf('Post', $comment->post);
+        $this->assertInstanceOf('Comment', $comment);
+        $this->assertInstanceOf('Post', $comment->post);
     }
 
     /** @test */
@@ -128,8 +129,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $posts = TestDummy::times(3)->create('Post');
 
-        assertInstanceOf('Illuminate\Support\Collection', $posts);
-        assertCount(3, $posts);
+        $this->assertInstanceOf('Illuminate\Support\Collection', $posts);
+        $this->assertCount(3, $posts);
     }
 
     /**
@@ -154,7 +155,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             'post_id.title' => 'override'
         ]);
 
-        assertEquals('override', $comment->post->title);
+        $this->assertEquals('override', $comment->post->title);
     }
 
     /** @test */
@@ -165,8 +166,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             'receiver_id.name' => 'Jeffrey',
         ]);
 
-        assertEquals('Adam', $message->sender->name);
-        assertEquals('Jeffrey', $message->receiver->name);
+        $this->assertEquals('Adam', $message->sender->name);
+        $this->assertEquals('Jeffrey', $message->receiver->name);
     }
 
     /** @test */
@@ -178,9 +179,9 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             'post_id.author_id.name' => 'Overridden Author Name',
         ]);
 
-        assertEquals('Overridden Comment Body', $comment->body);
-        assertEquals('Overridden Post Title', $comment->post->title);
-        assertEquals('Overridden Author Name', $comment->post->author->name);
+        $this->assertEquals('Overridden Comment Body', $comment->body);
+        $this->assertEquals('Overridden Post Title', $comment->post->title);
+        $this->assertEquals('Overridden Author Name', $comment->post->author->name);
     }
 
     /** @test */
@@ -191,9 +192,107 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             'post_id.title' => 'override'
         ]);
 
-        assertNull($comment->post);
-        assertNull($comment->getAttribute('post_id.title'));
+        $this->assertNull($comment->post);
+        $this->assertNull($comment->getAttribute('post_id.title'));
     }
+
+    /* Tests for using existing data
+     * @author Leo "Phroggyy" Sjöberg <leo@rlstudio.se>
+     */
+
+    /** @test */
+    public function it_establishes_relationships_if_specified()
+    {
+        $post = TestDummy::create('Post');
+        $comment = TestDummy::create('comment_for_existing_post');
+
+        $this->assertInstanceOf('Comment', $comment);
+        $this->assertInstanceOf('Post', $comment->post);
+        $this->assertEquals($post->id, $comment->post->id);
+    }
+
+    /** @test */
+    public function it_overrides_existing_relationship_attributes_if_specified()
+    {
+        $post = TestDummy::create('Post');
+        $comment = TestDummy::create('comment_for_existing_post', [
+            'post_id.title' => 'override'
+        ]);
+
+        $this->assertEquals('override', $comment->post->title);
+    }
+
+    /** @test */
+    public function it_overrides_existing_relationship_attributes_separately_for_relationships_that_use_the_same_factory()
+    {
+        TestDummy::times(2)->create('Person');    //We create 2 to ensure sender_id != receiver_id, since that will create an error
+        $message = TestDummy::create('message_between_existing_people', [
+            'sender_id.name' => 'Adam',
+            'receiver_id.name' => 'Jeffrey',
+        ]);
+
+        $this->assertEquals('Adam', $message->sender->name);
+        $this->assertEquals('Jeffrey', $message->receiver->name);
+    }
+
+    /** @test */
+    public function it_handles_both_creating_new_relations_and_using_existing_ones_in_the_same_factory()
+    {
+        TestDummy::create('Person');
+        $message = TestDummy::create('message_between_existing_and_new_people', [
+            'sender_id.name' => 'Adam',
+            'receiver_id.name' => 'Jeffrey',
+        ]);
+
+        $this->assertEquals('Adam', $message->sender->name);
+        $this->assertEquals('Jeffrey', $message->receiver->name);
+    }
+
+    /** @test */
+    public function it_can_override_deeply_nested_existing_relationships()
+    {
+        TestDummy::create('Person');
+        TestDummy::create('post_by_existing_person');
+        $comment = TestDummy::create('comment_for_existing_post_by_existing_person', [
+            'body' => 'Overridden Comment Body',
+            'post_id.title' => 'Overridden Post Title',
+            'post_id.author_id.name' => 'Overridden Author Name',
+        ]);
+
+        $this->assertEquals('Overridden Comment Body', $comment->body);
+        $this->assertEquals('Overridden Post Title', $comment->post->title);
+        $this->assertEquals('Overridden Author Name', $comment->post->author->name);
+    }
+
+    /** @test */
+    public function it_creates_models_if_no_existing_are_found()
+    {
+        $comment = TestDummy::create('comment_for_existing_post');
+
+        $this->assertInstanceOf('Comment', $comment);
+        $this->assertInstanceOf('Post', $comment->post);
+    }
+
+    /** @test */
+    public function it_can_create_and_persist_multiple_times_with_existing()
+    {
+        $posts = TestDummy::times(3)->create('post_by_existing_person');
+
+        $this->assertInstanceOf('Illuminate\Support\Collection', $posts);
+        $this->assertCount(3, $posts);
+        // Since we have no existing person the first time, it will be automatically created, but only once...
+        $this->assertEquals($posts[0]->author, $posts[1]->author);
+    }
+
+    /** @test */
+    public function it_will_create_a_new_when_two_are_required_but_only_one_exists()
+    {
+        TestDummy::create('Person');    //We create 2 to ensure sender_id != receiver_id, since that will create an error
+        $message = TestDummy::create('message_between_existing_people');
+
+        $this->assertNotEquals($message->sender, $message->receiver);
+    }
+
 }
 
 function comment()
