@@ -57,6 +57,18 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             $table->string('contents');
             $table->timestamps();
         });
+
+        DB::schema()->create('tags', function ($table) {
+            $table->increments('id');
+            $table->string('tag');
+            $table->timestamps();
+        });
+
+        DB::schema()->create('post_tags', function ($table) {
+            $table->increments('id');
+            $table->integer('post_id')->unsigned();
+            $table->integer('tag_id')->unsigned();
+        });
     }
 
     /** @test */
@@ -64,8 +76,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $attributes = TestDummy::build('Post');
 
-        assertInstanceOf('Post', $attributes);
-        assertEquals('Post Title', $attributes->title);
+        $this->assertInstanceOf('Post', $attributes);
+        $this->assertEquals('Post Title', $attributes->title);
     }
 
     /** @test */
@@ -73,7 +85,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $post = TestDummy::build('Post', ['title' => 'override']);
 
-        assertEquals('override', $post->title);
+        $this->assertEquals('override', $post->title);
     }
 
     /** @test */
@@ -81,7 +93,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $post = TestDummy::build('scheduled_post');
 
-        assertInstanceOf('Post', $post);
+        $this->assertInstanceOf('Post', $post);
     }
 
     /** @test */
@@ -89,11 +101,11 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $comments = TestDummy::times(2)->create('Comment');
 
-        assertInstanceOf('Comment', $comments[0]);
-        assertInternalType('string', $comments[0]->body);
+        $this->assertInstanceOf('Comment', $comments[0]);
+        $this->assertInternalType('string', $comments[0]->body);
 
         // Faker should produce a unique value for each generation.
-        assertNotEquals($comments[0]->body, $comments[1]->body);
+        $this->assertNotEquals($comments[0]->body, $comments[1]->body);
     }
 
     /** @test */
@@ -101,8 +113,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $attributes = TestDummy::attributesFor('Post', ['title' => 'override']);
 
-        assertInternalType('array', $attributes);
-        assertEquals('override', $attributes['title']);
+        $this->assertInternalType('array', $attributes);
+        $this->assertEquals('override', $attributes['title']);
     }
 
     /** @test */
@@ -110,8 +122,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $post = TestDummy::create('Post');
 
-        assertInstanceOf('Post', $post);
-        assertNotNull($post->id);
+        $this->assertInstanceOf('Post', $post);
+        $this->assertNotNull($post->id);
     }
 
     /** @test */
@@ -119,8 +131,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $comment = TestDummy::create('Comment');
 
-        assertInstanceOf('Comment', $comment);
-        assertInstanceOf('Post', $comment->post);
+        $this->assertInstanceOf('Comment', $comment);
+        $this->assertInstanceOf('Post', $comment->post);
     }
 
     /** @test */
@@ -128,8 +140,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     {
         $posts = TestDummy::times(3)->create('Post');
 
-        assertInstanceOf('Illuminate\Support\Collection', $posts);
-        assertCount(3, $posts);
+        $this->assertInstanceOf('Illuminate\Support\Collection', $posts);
+        $this->assertCount(3, $posts);
     }
 
     /**
@@ -154,7 +166,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             'post_id.title' => 'override'
         ]);
 
-        assertEquals('override', $comment->post->title);
+        $this->assertEquals('override', $comment->post->title);
     }
 
     /** @test */
@@ -165,8 +177,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             'receiver_id.name' => 'Jeffrey',
         ]);
 
-        assertEquals('Adam', $message->sender->name);
-        assertEquals('Jeffrey', $message->receiver->name);
+        $this->assertEquals('Adam', $message->sender->name);
+        $this->assertEquals('Jeffrey', $message->receiver->name);
     }
 
     /** @test */
@@ -178,9 +190,9 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             'post_id.author_id.name' => 'Overridden Author Name',
         ]);
 
-        assertEquals('Overridden Comment Body', $comment->body);
-        assertEquals('Overridden Post Title', $comment->post->title);
-        assertEquals('Overridden Author Name', $comment->post->author->name);
+        $this->assertEquals('Overridden Comment Body', $comment->body);
+        $this->assertEquals('Overridden Post Title', $comment->post->title);
+        $this->assertEquals('Overridden Author Name', $comment->post->author->name);
     }
 
     /** @test */
@@ -191,8 +203,21 @@ class FactoryTest extends PHPUnit_Framework_TestCase
             'post_id.title' => 'override'
         ]);
 
-        assertNull($comment->post);
-        assertNull($comment->getAttribute('post_id.title'));
+        $this->assertNull($comment->post);
+        $this->assertNull($comment->getAttribute('post_id.title'));
+    }
+
+    /** @test */
+    public function it_uses_a_pivot_model()
+    {
+        $parent = new Post;
+        TestDummy::$databaseProvider = new Laracasts\TestDummy\EloquentPivotModel($parent, 'post_tags');
+
+        $postTag = TestDummy::create('PostTag');
+
+        TestDummy::$databaseProvider = new Laracasts\TestDummy\EloquentModel();
+
+        $this->assertInstanceOf('PostTag', $postTag);
     }
 }
 

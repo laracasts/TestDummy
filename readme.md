@@ -55,7 +55,7 @@ array(4) {
 $post = Factory::attributesFor('Post');
 ```
 
-The difference between `build()` and `attributesFor()` is that the former will return an instance of the given model type (such as `Post`). The latter will simply return an array of the generated attributes, which can be useful in some situations. 
+The difference between `build()` and `attributesFor()` is that the former will return an instance of the given model type (such as `Post`). The latter will simply return an array of the generated attributes, which can be useful in some situations.
 
 ### Build and persist a song entity.
 
@@ -211,6 +211,16 @@ use Laracasts\TestDummy\Factory;
 $adminUser = Factory::create('admin_user');
 ```
 
+#### Custom Pivot Models
+
+If your model is a [Custom Pivot Model](http://laravel.com/docs/5.0/eloquent#working-with-pivot-tables) use TestDummy's EloquentPivotModel provider and pass through the pivot models parent and the pivot table name. Don't forget to reset the TestDummy database provider back to an Eloquent model before creating any further factories;
+
+```
+Factory::$databaseProvider = new Laracasts\TestDummy\EloquentPivotModel(new Post, 'post_tags');
+Factory::create('PostTag');
+Factory::$databaseProvider = new Laracasts\TestDummy\EloquentModel();
+```
+
 #### Defining with Closures
 
 Alternatively, you may pass a closure as the second argument to the `$factory` method. This can be useful for situations where you need a bit more control over the values that you assign to each attribute. Here's an example:
@@ -218,7 +228,7 @@ Alternatively, you may pass a closure as the second argument to the `$factory` m
 ```php
 $factory('App\Artist', function($faker) {
     $name = sprintf('Some Band Named %s', $faker->word);
-    
+
     return [
         'name' => $name
     ];

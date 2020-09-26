@@ -39,3 +39,12 @@ $factory('Message', [
 $factory('Person', [
     'name' => $faker->name
 ]);
+
+$factory('Tag', [
+    'tag' => $faker->name
+]);
+
+$factory('PostTag', [
+    'post_id' => '1',
+    'tag_id'  => '1'
+]);
