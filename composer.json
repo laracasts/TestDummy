@@ -1,5 +1,5 @@
 {
-    "name": "laracasts/testdummy",
+    "name": "razorpay/testdummy",
     "description": "Easy test stubs",
     "keywords": ["testing", "laravel", "factorygirl", "stubs"],
     "license": "MIT",
@@ -7,6 +7,10 @@
         {
             "name": "Jeffrey Way",
             "email": "jeffrey@laracasts.com"
+        },
+        {
+            "name": "Team Razorpay",
+            "email": "support@razorpay.com"
         }
     ],
     "require": {
