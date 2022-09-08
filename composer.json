@@ -1,5 +1,5 @@
 {
-    "name": "razorpay/testdummy",
+    "name": "laracasts/testdummy",
     "description": "Easy test stubs",
     "keywords": ["testing", "laravel", "factorygirl", "stubs"],
     "license": "MIT",
@@ -36,10 +36,5 @@
             "tests/support/models"
         ]
     },
-    "minimum-stability": "dev",
-    "config": {
-        "allow-plugins": {
-            "kylekatarnls/update-helper": false
-        }
-    }
+    "minimum-stability": "dev"
 }
